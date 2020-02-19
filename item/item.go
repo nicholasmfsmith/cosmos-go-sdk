@@ -1,18 +1,52 @@
+// Package item provides CRUD operations for an Azure Cosmos Item.
 package item
 
-type ItemClient struct {
-	id           string
-	partitionKey string
+// Item is the type that describes the Azure Cosmos Item.
+type Item struct {
+	id            string
+	partitionKey  string
+	dbName        string
+	containerName string
+	primaryKey    string
 }
+
+/**
+TODO: [NS] Remove the interface below. It should be standardized across all sub-resources of container to have a single contract between container and all child resources
+type IITem interface {
+	// Takes in the document as a []byte and optionally returns error
+	Create([]byte) error
+	// Returns the document as a []byte and an optional error
+	Read() ([]byte, error)
+	// Takes in the updated document as a []byte and optionally returns error
+	Update([]byte) error
+	// Returns an optional error
+	Delete() error
+}
+**/
 
 // TODO: Consider all SQL Queries are creates
 // TODO: Separate HTTP request to utils
-// TODO: Explore potentially using async logic for HTTP requests
-func (itemClient *ItemClient) Create() error {
+
+// Create creates an Item in the Azure Cosmos Database Container.
+// It returns any errors encountered.
+func (item Item) Create(document []byte) error {
 	return nil
 }
 
-// TODO: Look into the differences in CRUD for different Cosmos components (it's possible the methods are similar, may be able to generalize)
-func (itemClient *ItemClient) Read() ([]byte, error) {
+// Read reads an Item in the Azure Cosmos Database Container.
+// It returns a byte array of the item in the Azure Cosmos Database Container and any errors encountered.
+func (item Item) Read() ([]byte, error) {
 	return nil, nil
+}
+
+// Update updates an Item in the Azure Cosmos Database Container.
+// It returns any errors encountered.
+func (item Item) Update(document []byte) error {
+	return nil
+}
+
+// Delete deletes an Item in the Azure Cosmos Database Container.
+// It returns any errors encountered.
+func (item Item) Delete() error {
+	return nil
 }
