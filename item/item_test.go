@@ -22,6 +22,7 @@ var _ = Describe("Item", func() {
 		})
 	})
 
+	// TODO: [NS] Fully implement item.Read(). Doing so will make this test pass
 	Context("Read", func() {
 		It("should successfully read an item from the Azure Cosmos Database Container", func() {
 			document, testReadError := testItem.Read()
