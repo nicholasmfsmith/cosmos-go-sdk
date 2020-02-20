@@ -1,19 +1,24 @@
+// Package client manages the Azure Cosmos client and provides the functionality to create an instance of a Database.
 package client
 
-import "cosmos-go-sdk/database"
-
-type BaseClient struct {
+// Client is the type that describes the Azure Cosmos Client.
+type Client struct {
 	url string
 	key string
 }
 
-func CosmosClient(url, key string) *BaseClient {
-	return &BaseClient{
+// CosmosClient returns an instance of the Client struct.
+func CosmosClient(url, key string) Client {
+	return Client{
 		url,
 		key,
 	}
 }
 
-func (baseClient *BaseClient) Database(name string) *database.DatabaseClient {
-	return nil
-}
+// TODO: [NS] Create instance of Database
+// Database returns an instance of Database with the current instance of Client as the context on which to create the new Database.
+// func (client Client) Database(name string) *database.Database {
+// 	return &database.Database{
+// 		name,
+// 	}
+// }

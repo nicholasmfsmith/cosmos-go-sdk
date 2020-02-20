@@ -4,10 +4,12 @@ import (
 	"cosmos-go-sdk/item"
 )
 
-type ContainerClient struct {
+type Container struct {
 	name string
 }
 
-func (containerClient *ContainerClient) Item(id, partitionKey string) *item.ItemClient {
+// TODO: [NS] Create an interface for all resources that are valid at the container level
+// TODO: [NS] Create an 'Items' package to handle actions that are performed across items
+func (container *Container) Item(id, partitionKey string) *item.Item {
 	return nil
 }
