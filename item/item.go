@@ -7,7 +7,7 @@ type Item struct {
 	partitionKey  string
 	dbName        string
 	containerName string
-	primaryKey    string
+	key           string
 }
 
 /**

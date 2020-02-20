@@ -3,15 +3,15 @@ package client
 
 // Client is the type that describes the Azure Cosmos Client.
 type Client struct {
-	url        string
-	primaryKey string
+	url string
+	key string
 }
 
 // CosmosClient returns an instance of the Client struct.
-func CosmosClient(url, primaryKey string) Client {
+func CosmosClient(url, key string) Client {
 	return Client{
 		url,
-		primaryKey,
+		key,
 	}
 }
 
