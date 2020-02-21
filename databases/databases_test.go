@@ -8,9 +8,13 @@ import (
 )
 
 var _ = Describe("Container", func() {
+	var testClient Databases
+	BeforeEach(func() {
+		testClient = Client("name", "key")
+	})
+
 	Context("Client", func() {
 		It("should successfully return a new instance of a Databases Client", func() {
-			testClient := Client("name", "key")
 			Expect(testClient).To(BeAssignableToTypeOf(Databases{}))
 		})
 	})
@@ -18,7 +22,6 @@ var _ = Describe("Container", func() {
 	Context("CreateIfNotExist", func() {
 		It("should successfully create an Databases entity", func() {
 			testEntityId := "id"
-			testClient := Client("name", "key")
 			testEntity := testClient.CreateIfNotExist(testEntityId)
 			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
 		})
@@ -27,7 +30,6 @@ var _ = Describe("Container", func() {
 	Context("Create", func() {
 		It("should successfully create an Database entity", func() {
 			testEntityId := "id"
-			testClient := Client("name", "key")
 			testEntity := testClient.Create(testEntityId)
 			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
 		})
@@ -35,7 +37,6 @@ var _ = Describe("Container", func() {
 
 	Context("List", func() {
 		It("should return the list of Database entity", func() {
-			testClient := Client("name", "key")
 			testListError := testClient.List()
 			Expect(testListError).To(BeNil())
 		})
