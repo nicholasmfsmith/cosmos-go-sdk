@@ -9,39 +9,27 @@ import (
 
 var _ = Describe("Database", func() {
 
-	Context("Create", func() {
-		It("should successfully create an database item on an Azure Cosmos DB account", func() {
-			testDocumentId := "id"
-			testClient := Client("testDB", "testKey")
-			testCreateError := testClient.Create(testDocumentId)
-			Expect(testCreateError).To(BeNil())
+	Context("Client", func() {
+		It("should successfully return a new instance of a Database Client", func() {
+			testClient := Client("name", "key")
+			Expect(testClient).To(BeAssignableToTypeOf(Database{}))
 		})
 	})
 
 	Context("Get", func() {
-		It("should successfully fetch an database item from an Azure Cosmos DB account", func() {
-			testDocumentId := "id"
+		It("should successfully fetch an Database entity from an Azure Cosmos DB account", func() {
+			testEntityId := "id"
 			testClient := Client("testDB", "testKey")
-			database, testReadError := testClient.Get(testDocumentId)
+			database, testReadError := testClient.Get(testEntityId)
 			Expect(testReadError).To(BeNil())
 			Expect(database).ToNot(BeNil())
 		})
 	})
 
-	Context("List", func() {
-		It("should successfully fetch an database item from an Azure Cosmos DB account", func() {
-			testClient := Client("testDB", "testKey")
-			databases, testReadError := testClient.List()
-			Expect(testReadError).To(BeNil())
-			Expect(databases).ToNot(BeNil())
-		})
-	})
-
 	Context("Delete", func() {
-		It("should successfully delete an item from the Azure Cosmos Database Container", func() {
-			testDocumentId := "id"
+		It("should successfully delete current Database entity", func() {
 			testClient := Client("testDB", "testKey")
-			testDeleteError, testReadError := testClient.Delete(testDocumentId)
+			testDeleteError, testReadError := testClient.Delete()
 			Expect(testReadError).To(BeNil())
 			Expect(testDeleteError).To(BeNil())
 		})

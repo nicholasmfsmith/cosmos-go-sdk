@@ -1,16 +1,26 @@
-// Package container provides functions to create, list, and fetch Cosmos Container resources
+// Package container provides functions to create, list, and fetch Cosmos Entity resources
 // and retrieve and instance of an container client
 package container
 
-// Client defines the container client
-type Client struct {
+// Container defines the container client
+type Container struct {
 	name   string
 	dbName string
 	key    string
 }
 
-// Container defines an cosmos container instance
-type Container struct {
+// Client creates an instance of a container
+// It returns a Container Client
+func Client(name, dbName, key string) Container {
+	return Container{
+		name,
+		dbName,
+		key,
+	}
+}
+
+// Entity defines an cosmos Container entity
+type Entity struct {
 	id             string         // name of container provided on creation
 	indexingPolicy IndexingPolicy // It is the indexing policy settings for collection.
 	partitionKey   PartitionKey   // It is the partitioning configuration settings for collection.
@@ -25,53 +35,57 @@ type Container struct {
 	_conflicts     string         // It is a system generated property that specifies the addressable path of the conflicts resource. During an operation on a resource within a collection, if a conflict occurs, users can inspect the conflicting resources by performing a GET on the conflicts URI path.
 }
 
+// PartitionKey defines the partitioning configuration settings for collection.
 type PartitionKey struct {
-	path {}string
-	king string
+	path []string // An array of paths using which data within the collection can be partitioned.
+	kind string   // The algorithm used for partitioning. Only Hash is supported.
 }
 
+// IndexingPolicy defines the indexing policy settings for collection.
 type IndexingPolicy struct {
-	automatic     string
-	indexingMode  string
-	includedPaths IncludedPaths
-	excludedPaths ExcludedPaths
+	automatic     string          // Indicates whether automatic indexing is on or off. The default value is True, thus all documents are indexed. Setting the value to False would allow manual configuration of indexing paths
+	indexingMode  string          // By default, the indexing mode is Consistent. This means that indexing occurs synchronously during insertion, replacment or deletion of documents. To have indexing occur asynchronously, set the indexing mode to lazy.
+	includedPaths []IncludedPaths // The array containing document paths to be indexed. By default, two paths are included: the / path, which specifies that all document paths be indexed, and the _ts path, which indexes for a timestamp range comparison.
+	excludedPaths []ExcludedPaths // The array containing document paths to be excluded from indexing.
 }
 
+// IncludedPaths defines included paths used for indexing
 type IncludedPaths struct {
-	path 		string
-	dataType 	string // should be enum
-	kind 		string
-	precision 	int
+	path      string // Path for which the indexing behavior applies to
+	dataType  string // It is the datatype for which the indexing behavior is applied to. Can be String, Number, Point, Polygon, or LineString. Booleans and nulls are automatically indexed
+	kind      string // The type of index. Hash indexes are useful for equality comparisons while Range indexes are useful for equality, range comparisons and sorting. Spatial indexes are useful for spatial queries.
+	precision int    // The precision of the index. Can be either set to -1 for maximum precision or between 1-8 for Number, and 1-100 for String. Not applicable for Point, Polygon, and LineString data types.
 }
 
+// ExcludedPaths defines excluded paths used for indexing
 type ExcludedPaths struct {
-	path string
+	path string // Path that is excluded from indexing
 }
 
-// Create creates an new instance of an cosmos container
-// It returns a Container struct
-func (client *Client) Create(id string) *Container {
-	return nil
-}
-
-// List all available Containers
-// It returns a list of Container structs
-func (client *Client) List() []*Container {
-	return nil
-}
-
-// Get fetches a Container by id
-// It returns a Container struct
-func (client *Client) Get(id string) *Container {
-	return nil
+// Get fetches a Container Entity by id
+// It returns a Container Entity struct
+func (client *Container) Get() (*Entity, error) {
+	// TODO - [SC] implement Get
+	return &Entity{}, nil
 }
 
 // Delete deletes an container
-// It returns nil
-func (client *Client) Delete() {
+// It returns nil if successfull
+func (client *Container) Delete() error {
+	// TODO - [SC] implement Delete
 	return nil
 }
 
-// func (containerClient *Client) Item(id, partitionKey string) *item.ItemClient {
+// Replace upserts a container to a given database
+// It returns a Container Entity struct
+func (client *Container) Replace(document Entity) (*Entity, error) {
+	// TODO - [SC] implement Replace
+	return &Entity{}, nil
+}
+
+// TODO - [SC] need more understanding of what his is suppose to return
+// GetPartitionKeyRanges fetches a Entity by id
+// It returns a Container Entity struct
+// func (client *Container) GetPartitionKeyRanges() *Entity {
 // 	return nil
 // }
