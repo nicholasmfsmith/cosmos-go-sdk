@@ -4,6 +4,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"cosmos-go-sdk/database"
 	. "cosmos-go-sdk/databases"
 )
 
@@ -23,7 +24,7 @@ var _ = Describe("Container", func() {
 		It("should successfully create an Databases entity", func() {
 			testEntityId := "id"
 			testEntity, testCreationError := testClient.CreateIfNotExist(testEntityId)
-			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
+			Expect(testEntity).To(BeAssignableToTypeOf(database.Entity{}))
 			Expect(testCreationError).To(BeNil())
 		})
 	})
@@ -32,7 +33,7 @@ var _ = Describe("Container", func() {
 		It("should successfully create an Database entity", func() {
 			testEntityId := "id"
 			testEntity, testCreationError := testClient.Create(testEntityId)
-			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
+			Expect(testEntity).To(BeAssignableToTypeOf(database.Entity{}))
 			Expect(testCreationError).To(BeNil())
 		})
 	})
@@ -40,7 +41,7 @@ var _ = Describe("Container", func() {
 	Context("List", func() {
 		It("should return the list of Database entity", func() {
 			testEntity, testListError := testClient.List()
-			Expect(testEntity).To(BeAssignableToTypeOf([]Databases{}))
+			Expect(testEntity).To(BeAssignableToTypeOf([]database.Entity{}))
 			Expect(testListError).To(BeNil())
 		})
 	})

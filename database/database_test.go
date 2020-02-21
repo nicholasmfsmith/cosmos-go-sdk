@@ -31,8 +31,7 @@ var _ = Describe("Database", func() {
 
 	Context("Delete", func() {
 		It("should successfully delete current Database entity", func() {
-			testDeleteError, testReadError := testClient.Delete()
-			Expect(testReadError).To(BeNil())
+			testDeleteError := testClient.Delete()
 			Expect(testDeleteError).To(BeNil())
 		})
 	})

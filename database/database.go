@@ -35,6 +35,6 @@ func (client *Database) Get(id string) (Entity, error) {
 
 // Delete an Database entity
 // It returns deleted database entity
-func (client *Database) Delete() (Entity, error) {
-	return Entity{}, nil
+func (client *Database) Delete() error {
+	return nil
 }
