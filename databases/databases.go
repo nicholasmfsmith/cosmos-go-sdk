@@ -19,18 +19,18 @@ func Client(name, key string) Databases {
 
 // Create creates an new instance of an cosmos database
 // It returns a Database entity
-func (client *Databases) Create(id string) database.Entity {
-	return nil
+func (client *Databases) Create(id string) (database.Entity, error) {
+	return database.Entity{}, nil
 }
 
 // CreateIfNotExist creates an new instance of an cosmos database
 // It returns a Database entity
-func (client *Databases) CreateIfNotExist(id string) database.Entity {
-	return nil
+func (client *Databases) CreateIfNotExist(id string) (database.Entity, error) {
+	return database.Entity{}, nil
 }
 
 // List queries all databases on an given account
 // It should return an array of Entities
-func (client *Databases) List() []database.Entity {
-	return nil
+func (client *Databases) List() ([]database.Entity, error) {
+	return []database.Entity{}, nil
 }

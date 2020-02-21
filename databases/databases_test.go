@@ -22,22 +22,25 @@ var _ = Describe("Container", func() {
 	Context("CreateIfNotExist", func() {
 		It("should successfully create an Databases entity", func() {
 			testEntityId := "id"
-			testEntity := testClient.CreateIfNotExist(testEntityId)
+			testEntity, testCreationError := testClient.CreateIfNotExist(testEntityId)
 			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
+			Expect(testCreationError).To(BeNil())
 		})
 	})
 
 	Context("Create", func() {
 		It("should successfully create an Database entity", func() {
 			testEntityId := "id"
-			testEntity := testClient.Create(testEntityId)
+			testEntity, testCreationError := testClient.Create(testEntityId)
 			Expect(testEntity).To(BeAssignableToTypeOf(Databases{}))
+			Expect(testCreationError).To(BeNil())
 		})
 	})
 
 	Context("List", func() {
 		It("should return the list of Database entity", func() {
-			testListError := testClient.List()
+			testEntity, testListError := testClient.List()
+			Expect(testEntity).To(BeAssignableToTypeOf([]Databases{}))
 			Expect(testListError).To(BeNil())
 		})
 	})
