@@ -64,9 +64,9 @@ type ExcludedPaths struct {
 
 // Get fetches a Container Entity by id
 // It returns a Container Entity struct
-func (client *Container) Get() (*Entity, error) {
+func (client *Container) Get() (Entity, error) {
 	// TODO - [SC] implement Get
-	return &Entity{}, nil
+	return Entity{}, nil
 }
 
 // Delete deletes an container
@@ -78,9 +78,9 @@ func (client *Container) Delete() error {
 
 // Replace upserts a container to a given database
 // It returns a Container Entity struct
-func (client *Container) Replace(document Entity) (*Entity, error) {
+func (client *Container) Replace(document Entity) (Entity, error) {
 	// TODO - [SC] implement Replace
-	return &Entity{}, nil
+	return Entity{}, nil
 }
 
 // TODO - [SC] need more understanding of what his is suppose to return

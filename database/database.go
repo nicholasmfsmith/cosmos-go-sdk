@@ -29,12 +29,12 @@ type Entity struct {
 
 // Get fetches a Database by id
 // It returns a Database entity
-func (client *Database) Get(id string) (*Entity, error) {
-	return &Entity{}, nil
+func (client *Database) Get(id string) (Entity, error) {
+	return Entity{}, nil
 }
 
 // Delete an Database entity
 // It returns deleted database entity
-func (client *Database) Delete() (*Entity, error) {
-	return &Entity{}, nil
+func (client *Database) Delete() (Entity, error) {
+	return Entity{}, nil
 }
