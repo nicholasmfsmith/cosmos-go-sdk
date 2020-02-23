@@ -8,9 +8,9 @@ import (
 )
 
 var _ = Describe("Client", func() {
-	Context("CosmosClient", func() {
+	Context("New", func() {
 		It("should successfully return a new instance of Client", func() {
-			testClient := CosmosClient("www.testurl.com", "aTESTKEy")
+			testClient := New("www.testurl.com", "aTESTKEy")
 			Expect(testClient).To(BeAssignableToTypeOf(Client{}))
 		})
 	})
