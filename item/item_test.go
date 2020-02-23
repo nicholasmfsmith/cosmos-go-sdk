@@ -14,6 +14,13 @@ var _ = Describe("Item", func() {
 		testItem = Item{}
 	})
 
+	Context("New", func() {
+		It("should successfully return a new instance of Item", func() {
+			testItem = New("testId", "testPartitionKey", "testDatabaseName", "testContainerName", "testKey")
+			Expect(testItem).To(BeAssignableToTypeOf(Item{}))
+		})
+	})
+
 	Context("Create", func() {
 		It("should successfully create an item in the Azure Cosmos Database Container", func() {
 			testDocument := []byte("This is a test new document")

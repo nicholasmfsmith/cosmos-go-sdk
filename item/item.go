@@ -5,7 +5,7 @@ package item
 type Item struct {
 	id            string
 	partitionKey  string
-	dbName        string
+	databaseName  string
 	containerName string
 	key           string
 }
@@ -23,6 +23,17 @@ type IITem interface {
 	Delete() error
 }
 **/
+
+// New returns an instance of the Item struct.
+func New(id, partitionKey, databaseName, containerName, key string) Item {
+	return Item{
+		id,
+		partitionKey,
+		databaseName,
+		containerName,
+		key,
+	}
+}
 
 // TODO: Consider all SQL Queries are creates
 // TODO: Separate HTTP request to utils
