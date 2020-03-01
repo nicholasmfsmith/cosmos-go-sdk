@@ -1,5 +1,7 @@
 # Cosmos Go SDK
 
+[![Build Status](https://travis-ci.com/nicholasmfsmith/cosmos-go-sdk.svg?branch=master)](https://travis-ci.com/nicholasmfsmith/cosmos-go-sdk)
+
 ## Purpose
 - My attempt at creating a developer friendly Azure Cosmos Go SDK
 
