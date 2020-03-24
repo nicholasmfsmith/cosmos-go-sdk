@@ -24,12 +24,6 @@ type Token struct {
 	mux          sync.Mutex
 }
 
-// IToken is an interface that defines the contract between the client and token.
-// Having this contract makes this package easier to mock for the client.
-type IToken interface {
-	Build() error
-}
-
 // Private constants used to build the token.
 const (
 	masterToken  = "master"
