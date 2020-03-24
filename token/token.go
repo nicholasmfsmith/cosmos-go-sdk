@@ -4,53 +4,111 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"errors"
+	"net/http"
 	"net/url"
+	"strings"
+	"sync"
+	"time"
 )
 
+// Token is the type describes a constructed token.
+// It includes the dynamic context required to create a valid token.
+type Token struct {
+	Method       string
+	ResourceType string
+	ResourceID   string
+	Key          string
+	Date         string
+	Token        string
+	mux          sync.Mutex
+}
+
+// IToken is an interface that defines the contract between the client and token.
+// Having this contract makes this package easier to mock for the client.
+type IToken interface {
+	Build() error
+}
+
+// Private constants used to build the token.
 const (
 	masterToken  = "master"
 	tokenVersion = "1.0"
 )
 
-type ITokenText interface {
-	BuildText(resourceType, resourceID, date string) string
+// Useful HTTP verbs for the client to leverage.
+const (
+	MethodGet    = "get"
+	MethodPost   = "post"
+	MethodPut    = "put"
+	MethodDelete = "delete"
+)
+
+// Internal error messages used for building token.
+const (
+	errorDecodingProvidedKey          = "Error decoding provided key: "
+	errorWritingProvidedContextToHash = "Error writing provided context to the hash: "
+	emptyHTTPMethod                   = "Error building token: Provided HTTP method is empty"
+	emptyResourceType                 = "Error building token: Provided Resource Type is empty"
+	emptyResourceID                   = "Error building token: Provided Resource ID is empty"
+	emptyKey                          = "Error building token: Provided key is empty"
+	emptyDate                         = "Error building token: Provided date is empty"
+)
+
+// New returns a pointer to a new instance of Token
+// based on the provided input context of method, resource type, resource ID, and key.
+func New(method, resourceType, resourceID, key string) *Token {
+	token := Token{}
+	token.Method = method
+	token.ResourceType = resourceType
+	token.ResourceID = resourceID
+	token.Key = key
+	// Similar to RFC1123 but uses GMT as the time zone
+	token.Date = strings.ToLower(time.Now().UTC().Format(http.TimeFormat))
+	return &token
 }
 
-type CreateToken string
-type ReadToken string
-type UpdateToken string
-type DeleteToken string
+// Build generates a new token based on the input context
+// provided by the function receiver of *Token and returns any errors encountered.
+func (token *Token) Build() error {
+	// Error checking for empty context values
+	if len(token.Method) == 0 {
+		return errors.New(emptyHTTPMethod)
+	}
 
-type Token struct {
-	ResouceType string
-	ResourceID  string
-	Date        string
-	Token       string
-}
+	if len(token.ResourceType) == 0 {
+		return errors.New(emptyResourceType)
+	}
 
-func getToken(iTokenText ITokenText) {
-	text := iTokenText.BuildText("resourceType", "resourceID", "date")
-	decodedKey, _ := base64.StdEncoding.DecodeString("key")
+	if len(token.ResourceID) == 0 {
+		return errors.New(emptyResourceID)
+	}
+
+	if len(token.Key) == 0 {
+		return errors.New(emptyKey)
+	}
+
+	if len(token.Date) == 0 {
+		return errors.New(emptyDate)
+	}
+
+	// Set a mutual exclusion to protect against conflicts between goroutines.
+	token.mux.Lock()
+	defer token.mux.Unlock()
+
+	decodedKey, err := base64.StdEncoding.DecodeString(token.Key)
+	if err != nil {
+		return errors.New(errorDecodingProvidedKey + err.Error())
+	}
 
 	h := hmac.New(sha256.New, decodedKey)
-	h.Write([]byte(text))
+	text := strings.ToLower(token.Method) + "\n" + token.ResourceType + "\n" + token.ResourceID + "\n" + token.Date + "\n" + "" + "\n"
+	_, err = h.Write([]byte(text))
+	if err != nil {
+		return errors.New(errorWritingProvidedContextToHash + err.Error())
+	}
 
 	sig := base64.StdEncoding.EncodeToString(h.Sum(nil))
-	authToken := url.QueryEscape("type=" + masterToken + "&ver=" + tokenVersion + "&sig=" + sig)
-}
-
-func (createToken CreateToken) BuildText(resourceType, resourceID, date string) string {
-	return "post" + "\n" + resourceType + "\n" + resourceID + "\n" + date + "\n" + "" + "\n"
-}
-
-func (readToken ReadToken) BuildText(resourceType, resourceID, date string) string {
-	return "read" + "\n" + resourceType + "\n" + resourceID + "\n" + date + "\n" + "" + "\n"
-}
-
-func (updateToken UpdateToken) BuildText(resourceType, resourceID, date string) string {
-	return "put" + "\n" + resourceType + "\n" + resourceID + "\n" + date + "\n" + "" + "\n"
-}
-
-func (deleteToken DeleteToken) BuildText(resourceType, resourceID, date string) string {
-	return "delete" + "\n" + resourceType + "\n" + resourceID + "\n" + date + "\n" + "" + "\n"
+	token.Token = url.QueryEscape("type=" + masterToken + "&ver=" + tokenVersion + "&sig=" + sig)
+	return nil
 }

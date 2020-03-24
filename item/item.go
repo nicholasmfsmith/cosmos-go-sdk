@@ -47,7 +47,7 @@ func (item Item) Create(document []byte) error {
 // Read reads an Item in the Azure Cosmos Database Container.
 // It returns a byte array of the item in the Azure Cosmos Database Container and any errors encountered.
 func (item Item) Read() ([]byte, error) {
-	return nil, nil
+	return []byte(""), nil
 }
 
 // Update updates an Item in the Azure Cosmos Database Container.
