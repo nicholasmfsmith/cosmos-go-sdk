@@ -31,36 +31,27 @@ const (
 	tokenVersion = "1.0"
 )
 
-// Useful HTTP verbs for the client to leverage.
-const (
-	MethodGet    = "get"
-	MethodPost   = "post"
-	MethodPut    = "put"
-	MethodDelete = "delete"
-)
-
 // Internal error messages used for building token.
 const (
-	errorDecodingProvidedKey          = "Error decoding provided key: "
-	errorWritingProvidedContextToHash = "Error writing provided context to the hash: "
-	emptyHTTPMethod                   = "Error building token: Provided HTTP method is empty"
-	emptyResourceType                 = "Error building token: Provided Resource Type is empty"
-	emptyResourceID                   = "Error building token: Provided Resource ID is empty"
-	emptyKey                          = "Error building token: Provided key is empty"
-	emptyDate                         = "Error building token: Provided date is empty"
+	errDecodingProvidedKey          = "Error decoding provided key: "
+	errWritingProvidedContextToHash = "Error writing provided context to the hash: "
+	errEmptyHTTPMethod              = "Error building token: Provided HTTP method is empty"
+	errEmptyResourceType            = "Error building token: Provided Resource Type is empty"
+	errEmptyResourceID              = "Error building token: Provided Resource ID is empty"
+	errEmptyKey                     = "Error building token: Provided key is empty"
+	errEmptyDate                    = "Error building token: Provided date is empty"
 )
 
 // New returns a pointer to a new instance of Token
 // based on the provided input context of method, resource type, resource ID, and key.
 func New(method, resourceType, resourceID, key string) *Token {
-	token := Token{}
-	token.Method = method
-	token.ResourceType = resourceType
-	token.ResourceID = resourceID
-	token.Key = key
-	// Similar to RFC1123 but uses GMT as the time zone
-	token.Date = strings.ToLower(time.Now().UTC().Format(http.TimeFormat))
-	return &token
+	return &Token{
+		Method:       method,
+		ResourceType: resourceType,
+		ResourceID:   resourceID,
+		Key:          key,
+		Date:         strings.ToLower(time.Now().UTC().Format(http.TimeFormat)), // Similar to RFC1123 but uses GMT as the time zone
+	}
 }
 
 // Build generates a new token based on the input context
@@ -68,23 +59,23 @@ func New(method, resourceType, resourceID, key string) *Token {
 func (token *Token) Build() error {
 	// Error checking for empty context values
 	if len(token.Method) == 0 {
-		return errors.New(emptyHTTPMethod)
+		return errors.New(errEmptyHTTPMethod)
 	}
 
 	if len(token.ResourceType) == 0 {
-		return errors.New(emptyResourceType)
+		return errors.New(errEmptyResourceType)
 	}
 
 	if len(token.ResourceID) == 0 {
-		return errors.New(emptyResourceID)
+		return errors.New(errEmptyResourceID)
 	}
 
 	if len(token.Key) == 0 {
-		return errors.New(emptyKey)
+		return errors.New(errEmptyKey)
 	}
 
 	if len(token.Date) == 0 {
-		return errors.New(emptyDate)
+		return errors.New(errEmptyDate)
 	}
 
 	// Set a mutual exclusion to protect against conflicts between goroutines.
@@ -93,14 +84,14 @@ func (token *Token) Build() error {
 
 	decodedKey, err := base64.StdEncoding.DecodeString(token.Key)
 	if err != nil {
-		return errors.New(errorDecodingProvidedKey + err.Error())
+		return errors.New(errDecodingProvidedKey + err.Error())
 	}
 
 	h := hmac.New(sha256.New, decodedKey)
 	text := strings.ToLower(token.Method) + "\n" + token.ResourceType + "\n" + token.ResourceID + "\n" + token.Date + "\n" + "" + "\n"
 	_, err = h.Write([]byte(text))
 	if err != nil {
-		return errors.New(errorWritingProvidedContextToHash + err.Error())
+		return errors.New(errWritingProvidedContextToHash + err.Error())
 	}
 
 	sig := base64.StdEncoding.EncodeToString(h.Sum(nil))

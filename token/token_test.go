@@ -16,7 +16,7 @@ var _ = Describe("Token", func() {
 
 	BeforeEach(func() {
 		// NOTE: "dGVzdEtleQ==" -> base64("testKey")
-		testToken = New(MethodGet, "testResourceType", "testResourceID", "dGVzdEtleQ==")
+		testToken = New(http.MethodGet, "testResourceType", "testResourceID", "dGVzdEtleQ==")
 	})
 
 	Context("New", func() {
@@ -24,7 +24,7 @@ var _ = Describe("Token", func() {
 			Expect(testToken).To(BeAssignableToTypeOf(&Token{}))
 		})
 		It("should return a valid Token pointer with a missing token", func() {
-			testToken := New(MethodGet, "testResourceType", "testResourceID", "testKey")
+			testToken := New(http.MethodGet, "testResourceType", "testResourceID", "testKey")
 			Expect(testToken.Method).To(Not(BeEmpty()))
 			Expect(testToken.ResourceType).To(Not(BeEmpty()))
 			Expect(testToken.ResourceID).To(Not(BeEmpty()))
