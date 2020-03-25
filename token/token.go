@@ -78,10 +78,6 @@ func (token *Token) Build() error {
 		return errors.New(errEmptyDate)
 	}
 
-	// Set a mutual exclusion to protect against conflicts between goroutines.
-	token.mux.Lock()
-	defer token.mux.Unlock()
-
 	decodedKey, err := base64.StdEncoding.DecodeString(token.Key)
 	if err != nil {
 		return errors.New(errDecodingProvidedKey + err.Error())
