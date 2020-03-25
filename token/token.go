@@ -1,3 +1,4 @@
+// Package token provides functionality to generate an Azure Cosmos token.
 package token
 
 import (
