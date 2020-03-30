@@ -9,21 +9,21 @@ import (
 
 var _ = Describe("Database", func() {
 
-	var testClient Database
+	var testDatabase *Database
 	BeforeEach(func() {
-		testClient = Client("name", "key")
+		testDatabase = New("name", "key")
 	})
 
-	Context("Client", func() {
+	Context("New", func() {
 		It("should successfully return a new instance of a Database Client", func() {
-			Expect(testClient).To(BeAssignableToTypeOf(Database{}))
+			Expect(testDatabase).To(BeAssignableToTypeOf(&Database{}))
 		})
 	})
 
 	Context("Get", func() {
 		It("should successfully fetch an Database entity from an Azure Cosmos DB account", func() {
 			testEntityId := "id"
-			database, testReadError := testClient.Get(testEntityId)
+			database, testReadError := testDatabase.Get(testEntityId)
 			Expect(testReadError).To(BeNil())
 			Expect(database).ToNot(BeNil())
 		})
@@ -31,7 +31,7 @@ var _ = Describe("Database", func() {
 
 	Context("Delete", func() {
 		It("should successfully delete current Database entity", func() {
-			testDeleteError := testClient.Delete()
+			testDeleteError := testDatabase.Delete()
 			Expect(testDeleteError).To(BeNil())
 		})
 	})

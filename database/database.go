@@ -8,9 +8,9 @@ type Database struct {
 	key  string
 }
 
-// Client returns an instance of the Client struct.
-func Client(name, key string) Database {
-	return Database{
+// New returns an instance of Database
+func New(name, key string) *Database {
+	return &Database{
 		name,
 		key,
 	}
@@ -29,12 +29,12 @@ type Entity struct {
 
 // Get fetches a Database by id
 // It returns a Database entity
-func (client *Database) Get(id string) (Entity, error) {
+func (database *Database) Get(id string) (Entity, error) {
 	return Entity{}, nil
 }
 
 // Delete an Database entity
 // It returns deleted database entity
-func (client *Database) Delete() error {
+func (database *Database) Delete() error {
 	return nil
 }
