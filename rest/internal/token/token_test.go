@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "cosmos-go-sdk/token"
+	. "cosmos-go-sdk/rest/internal/token"
 )
 
 var _ = Describe("Token", func() {
