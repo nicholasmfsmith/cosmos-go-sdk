@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -22,7 +21,6 @@ type Token struct {
 	Key          string
 	Date         string
 	Token        string
-	mux          sync.Mutex
 }
 
 // Private constants used to build the token.
