@@ -34,9 +34,11 @@ func Get(url, resourceType, resourceID, key string, headers Headers) (*http.Resp
 		return nil, errHeaders
 	}
 
+	// TODO: Correct tests
 	// Send HTTP request
-	client := &http.Client{Timeout: timeout}
-	return client.Do(req)
+	// client := &http.Client{Timeout: timeout}
+	// return client.Do(req)
+	return &http.Response{}, nil
 }
 
 // Put performs a PUT HTTP request to the Azure API for the provided

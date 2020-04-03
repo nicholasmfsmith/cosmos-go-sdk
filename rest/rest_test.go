@@ -4,16 +4,31 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"cosmos-go-sdk/rest"
 	. "cosmos-go-sdk/rest"
 )
 
 var _ = Describe("Rest", func() {
 	var resource []byte
-	var id string
+	var url string
+	var resourceType string
+	var resourceID string
+	var key string
+	var headers rest.Headers
 
 	BeforeEach(func() {
 		resource = []byte("This is a test resource")
-		id = "1"
+		url = "www.testurl.com"
+		resourceType = "testType"
+		resourceID = "1"
+		key = "testKey"
+		headers = rest.Headers{
+			Authorization:   "testAuthorization",
+			ContentType:     "testContentType",
+			XMsDate:         "testXMsDate",
+			XMsSessionToken: "testXMsSessionToken",
+			XMsVersion:      "testXMsVersion",
+		}
 	})
 
 	Context("Post", func() {
@@ -26,7 +41,7 @@ var _ = Describe("Rest", func() {
 
 	Context("Get", func() {
 		It("should successfully GET a resource from Azure", func() {
-			testGetResource, testGetError := Get(id)
+			testGetResource, testGetError := Get(url, resourceType, resourceID, key, headers)
 			Expect(testGetResource).To(Not(BeNil()))
 			Expect(testGetError).To(BeNil())
 		})
@@ -34,7 +49,7 @@ var _ = Describe("Rest", func() {
 
 	Context("Put", func() {
 		It("should successfully PUT a resource in Azure", func() {
-			testPutResource, testPutError := Put(id, resource)
+			testPutResource, testPutError := Put(resourceID, resource)
 			Expect(testPutResource).To(Not(BeNil()))
 			Expect(testPutError).To(BeNil())
 		})
@@ -42,7 +57,7 @@ var _ = Describe("Rest", func() {
 
 	Context("Delete", func() {
 		It("should successfully DELETE a resource in Azure", func() {
-			testDeleteError := Delete(id)
+			testDeleteError := Delete(resourceID)
 			Expect(testDeleteError).To(BeNil())
 		})
 	})
