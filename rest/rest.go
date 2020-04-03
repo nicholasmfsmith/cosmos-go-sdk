@@ -4,7 +4,6 @@ package rest
 
 import (
 	"cosmos-go-sdk/rest/internal/token"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -21,32 +20,23 @@ func Post(resource []byte) ([]byte, error) {
 
 // Get performs a GET HTTP request to the Azure API to read the resource
 // identified by the provided resource ID.
-// It returns the requested resource as a byte array and any errors encountered.
-func Get(url, resourceType, resourceID, key string) ([]byte, error) {
+// It returns the a Response and error
+func Get(url, resourceType, resourceID, key string, headers Headers) (*http.Response, error) {
 
-	// Build Token
+	// Construct Auth Token
 	token := token.New(http.MethodGet, resourceType, resourceID, key)
 	token.Build()
 
-	// Prepare request
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	req.Header.Set("Authorization", token.Token)
+
+	errHeaders := setHeaders(req, headers)
+	if errHeaders != nil {
+		return nil, errHeaders
+	}
 
 	// Send HTTP request
 	client := &http.Client{Timeout: timeout}
-	response, errRequest := client.Do(req)
-	if errRequest != nil {
-		return []byte(""), errRequest
-	}
-	defer response.Body.Close()
-
-	// Read response body
-	body, errRead := ioutil.ReadAll(response.Body)
-	if errRead != nil {
-		return []byte(""), errRead
-	}
-
-	return body, nil
+	return client.Do(req)
 }
 
 // Put performs a PUT HTTP request to the Azure API for the provided
