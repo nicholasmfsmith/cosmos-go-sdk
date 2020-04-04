@@ -53,13 +53,13 @@ type Headers struct {
 	XMsCosmosAllowTentativeWrites          string
 }
 
-// Required Header Errors
-var (
-	errNoAuthorization   = errors.New("Required Request Header missing: Authorization")
-	errNoContentType     = errors.New("Required Request Header missing: Content-Type (on PUT and POST)")
-	errNoXMsDate         = errors.New("Required Request Header missing: x-ms-date")
-	errNoXMsSessionToken = errors.New("Required Request Header missing: x-ms-session-token (for session consistency only)")
-	errNoXMsVersion      = errors.New("Required Request Header missing: x-ms-version")
+// Header Error Messages
+const (
+	errNoAuthorization   = "Required Request Header missing: Authorization"
+	errNoContentType     = "Required Request Header missing: Content-Type (on PUT and POST)"
+	errNoXMsDate         = "Required Request Header missing: x-ms-date"
+	errNoXMsSessionToken = "Required Request Header missing: x-ms-session-token (for session consistency only)"
+	errNoXMsVersion      = "Required Request Header missing: x-ms-version"
 )
 
 // TODO: Rework with a map for optional headers
@@ -71,43 +71,43 @@ func setHeaders(req *http.Request, headers Headers) error {
 	}
 
 	// Common, optional headers
-	if emptyString(headers.IfMatch) {
+	if !emptyString(headers.IfMatch) {
 		req.Header.Set(headerIfMatch, headers.IfMatch)
 	}
-	if emptyString(headers.IfNoneMatch) {
+	if !emptyString(headers.IfNoneMatch) {
 		req.Header.Set(headerIfNoneMatch, headers.IfNoneMatch)
 	}
-	if emptyString(headers.UserAgent) {
+	if !emptyString(headers.UserAgent) {
 		req.Header.Set(headerUserAgent, headers.UserAgent)
 	}
-	if emptyString(headers.XMsActivityID) {
+	if !emptyString(headers.XMsActivityID) {
 		req.Header.Set(headerXMsActivityID, headers.XMsActivityID)
 	}
-	if emptyString(headers.XMsConsistencyLevel) {
+	if !emptyString(headers.XMsConsistencyLevel) {
 		req.Header.Set(headerXMsConsistencyLevel, headers.XMsConsistencyLevel)
 	}
-	if emptyString(headers.XMsContinuation) {
+	if !emptyString(headers.XMsContinuation) {
 		req.Header.Set(headerXMsContinuation, headers.XMsContinuation)
 	}
-	if emptyString(headers.XMsMaxItemCount) {
+	if !emptyString(headers.XMsMaxItemCount) {
 		req.Header.Set(headerXMsMaxItemCount, headers.XMsMaxItemCount)
 	}
-	if emptyString(headers.XMsDocumentDBPartitionKey) {
+	if !emptyString(headers.XMsDocumentDBPartitionKey) {
 		req.Header.Set(headerXMsDocumentDBPartitionKey, headers.XMsDocumentDBPartitionKey)
 	}
-	if emptyString(headers.XMsDocumentDBQueryEnableCrossPartition) {
+	if !emptyString(headers.XMsDocumentDBQueryEnableCrossPartition) {
 		req.Header.Set(headerXMsDocumentDBQueryEnableCrossPartition, headers.XMsDocumentDBQueryEnableCrossPartition)
 	}
-	if emptyString(headers.XMsSessionToken) {
+	if !emptyString(headers.XMsSessionToken) {
 		req.Header.Set(headerXMsSessionToken, headers.XMsSessionToken)
 	}
-	if emptyString(headers.AIm) {
+	if !emptyString(headers.AIm) {
 		req.Header.Set(headerAIm, headers.AIm)
 	}
-	if emptyString(headers.XMsDocumentDBPartitionKeyRangeID) {
+	if !emptyString(headers.XMsDocumentDBPartitionKeyRangeID) {
 		req.Header.Set(headerXMsDocumentDBPartitionKeyRangeID, headers.XMsDocumentDBPartitionKeyRangeID)
 	}
-	if emptyString(headers.XMsCosmosAllowTentativeWrites) {
+	if !emptyString(headers.XMsCosmosAllowTentativeWrites) {
 		req.Header.Set(headerXMsCosmosAllowTentativeWrites, headers.XMsCosmosAllowTentativeWrites)
 	}
 
@@ -120,21 +120,21 @@ func setHeaders(req *http.Request, headers Headers) error {
 func setRequiredHeaders(req *http.Request, authorization, contentType, xMsDate, xMsVersion string) error {
 
 	if emptyString(authorization) {
-		return errNoAuthorization
+		return errors.New(errNoAuthorization)
 	}
 
-	if emptyString(contentType) {
+	if !emptyString(contentType) {
 		req.Header.Set(headerContentType, contentType)
 	} else if contentTypeRequired(req.Method) {
-		return errNoContentType
+		return errors.New(errNoContentType)
 	}
 
 	if emptyString(xMsDate) {
-		return errNoXMsDate
+		return errors.New(errNoXMsDate)
 	}
 
 	if emptyString(xMsVersion) {
-		return errNoXMsVersion
+		return errors.New(errNoXMsVersion)
 	}
 
 	req.Header.Set(headerAuthorization, authorization)
