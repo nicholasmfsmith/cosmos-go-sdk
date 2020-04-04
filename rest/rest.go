@@ -20,14 +20,17 @@ func Post(resource []byte) ([]byte, error) {
 
 // Get performs a GET HTTP request to the Azure API to read the resource
 // identified by the provided resource ID.
-// It returns the a Response and error
+// It returns an http.Response and error
 func Get(url, resourceType, resourceID, key string, headers Headers) (*http.Response, error) {
 
 	// Construct Auth Token
 	token := token.New(http.MethodGet, resourceType, resourceID, key)
 	token.Build()
 
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	req, errRequest := http.NewRequest(http.MethodGet, url, nil)
+	if errRequest != nil {
+		return &http.Response{}, errRequest
+	}
 
 	errHeaders := setHeaders(req, headers)
 	if errHeaders != nil {
