@@ -1,5 +1,6 @@
 /*
 Package rest headers source file addresses the request headers used per spec  https://docs.microsoft.com/en-us/rest/api/cosmos-db/common-cosmosdb-rest-request-headers
+TODO: Handling of Optional Headers; Currently only Required Headers are being accounted for.
 */
 package rest
 
@@ -10,6 +11,75 @@ import (
 )
 
 // Header Names
+const (
+	headerAuthorization   = "Authorization"
+	headerContentType     = "Content-Type"
+	headerXMsDate         = "x-ms-date"
+	headerXMsSessionToken = "x-ms-session-token"
+	headerXMsVersion      = "x-ms-version"
+)
+
+// Headers contains common request headers with SQL API
+type Headers struct {
+	Authorization   string
+	ContentType     string
+	XMsDate         string // rfc1123
+	XMsSessionToken string
+	XMsVersion      string
+}
+
+// Header Error Messages
+const (
+	errNoAuthorization   = "Required Request Header missing: Authorization"
+	errNoContentType     = "Required Request Header missing: Content-Type (on PUT and POST)"
+	errNoXMsDate         = "Required Request Header missing: x-ms-date"
+	errNoXMsSessionToken = "Required Request Header missing: x-ms-session-token (for session consistency only)"
+	errNoXMsVersion      = "Required Request Header missing: x-ms-version"
+)
+
+// Required Headers
+// Authorization, Content-Type (only Required on PUT and POST), XMsDate, XMsSessionToken (for session consistency only), XMsVersion
+// TODO: Determine if required validator is necessary XMsSessionToken
+func setRequiredHeaders(req *http.Request, authorization, contentType, xMsDate, xMsVersion string) error {
+
+	if emptyString(authorization) {
+		return errors.New(errNoAuthorization)
+	}
+
+	if !emptyString(contentType) {
+		req.Header.Set(headerContentType, contentType)
+	} else if contentTypeRequired(req.Method) {
+		return errors.New(errNoContentType)
+	}
+
+	if emptyString(xMsDate) {
+		return errors.New(errNoXMsDate)
+	}
+
+	if emptyString(xMsVersion) {
+		return errors.New(errNoXMsVersion)
+	}
+
+	req.Header.Set(headerAuthorization, authorization)
+	req.Header.Set(headerXMsDate, xMsDate)
+	req.Header.Set(headerXMsVersion, xMsVersion)
+
+	return nil
+}
+
+// Content-Type Header is only required on PUT and POST
+func contentTypeRequired(method string) bool {
+	return (method == http.MethodPut || method == http.MethodPost)
+}
+
+// Trims white-space then checks length of string
+func emptyString(val string) bool {
+	return len(strings.TrimSpace(val)) == 0
+}
+
+// TODO: Account for Optional Headers
+/*
+
 const (
 	headerAuthorization                          = "Authorization"
 	headerContentType                            = "Content-Type"
@@ -31,7 +101,6 @@ const (
 	headerXMsCosmosAllowTentativeWrites          = "x-ms-cosmos-allow-tentative-writes"
 )
 
-// Headers contains common request headers with SQL API
 type Headers struct {
 	Authorization                          string
 	ContentType                            string
@@ -52,15 +121,6 @@ type Headers struct {
 	XMsDocumentDBPartitionKeyRangeID       string
 	XMsCosmosAllowTentativeWrites          string
 }
-
-// Header Error Messages
-const (
-	errNoAuthorization   = "Required Request Header missing: Authorization"
-	errNoContentType     = "Required Request Header missing: Content-Type (on PUT and POST)"
-	errNoXMsDate         = "Required Request Header missing: x-ms-date"
-	errNoXMsSessionToken = "Required Request Header missing: x-ms-session-token (for session consistency only)"
-	errNoXMsVersion      = "Required Request Header missing: x-ms-version"
-)
 
 // TODO: Rework with a map for optional headers
 func setHeaders(req *http.Request, headers Headers) error {
@@ -113,43 +173,4 @@ func setHeaders(req *http.Request, headers Headers) error {
 
 	return nil
 }
-
-// Required Headers
-// Authorization, Content-Type (only Required on PUT and POST), XMsDate, XMsSessionToken (for session consistency only), XMsVersion
-// TODO: Determine if required validator is necessary XMsSessionToken
-func setRequiredHeaders(req *http.Request, authorization, contentType, xMsDate, xMsVersion string) error {
-
-	if emptyString(authorization) {
-		return errors.New(errNoAuthorization)
-	}
-
-	if !emptyString(contentType) {
-		req.Header.Set(headerContentType, contentType)
-	} else if contentTypeRequired(req.Method) {
-		return errors.New(errNoContentType)
-	}
-
-	if emptyString(xMsDate) {
-		return errors.New(errNoXMsDate)
-	}
-
-	if emptyString(xMsVersion) {
-		return errors.New(errNoXMsVersion)
-	}
-
-	req.Header.Set(headerAuthorization, authorization)
-	req.Header.Set(headerXMsDate, xMsDate)
-	req.Header.Set(headerXMsVersion, xMsVersion)
-
-	return nil
-}
-
-// Content-Type Header is only required on PUT and POST
-func contentTypeRequired(method string) bool {
-	return (method == http.MethodPut || method == http.MethodPost)
-}
-
-// Trims white-space then checks length of string
-func emptyString(val string) bool {
-	return len(strings.TrimSpace(val)) == 0
-}
+*/

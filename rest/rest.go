@@ -32,7 +32,7 @@ func Get(url, resourceType, resourceID, key string, headers Headers) (*http.Resp
 		return &http.Response{}, errRequest
 	}
 
-	errHeaders := setHeaders(req, headers)
+	errHeaders := setRequiredHeaders(req, headers.Authorization, headers.ContentType, headers.XMsDate, headers.XMsVersion)
 	if errHeaders != nil {
 		return nil, errHeaders
 	}
