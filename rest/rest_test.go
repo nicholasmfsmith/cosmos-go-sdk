@@ -10,16 +10,15 @@ import (
 
 var _ = Describe("Rest", func() {
 	var resource []byte
-	var url string
 	var resourceType string
 	var resourceID string
 	var key string
 	var headers rest.Headers
 
+	// TODO: Dynamically test different resource types
 	BeforeEach(func() {
 		resource = []byte("This is a test resource")
-		url = "www.testurl.com"
-		resourceType = "testType"
+		resourceType = Database
 		resourceID = "1"
 		key = "testKey"
 		headers = rest.Headers{
@@ -41,7 +40,7 @@ var _ = Describe("Rest", func() {
 
 	Context("Get", func() {
 		It("should successfully GET a resource from Azure", func() {
-			testGetResource, testGetError := Get(url, resourceType, resourceID, key, headers)
+			testGetResource, testGetError := Get(resourceType, resourceID, key, headers)
 			Expect(testGetResource).To(Not(BeNil()))
 			Expect(testGetError).To(BeNil())
 		})
