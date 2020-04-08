@@ -1,66 +1,67 @@
 /*
 Package rest resources source file contains type definitions needed to generate resource-specific requests
+TODO: Is there a better place for these definitions? Can they be integrated with resource packages?
 */
 package rest
 
-// Resource .
+// Resource defines a CosmosDB REST API resource
 type Resource struct {
 	Account    string
 	ResourceID string
 }
 
-// Database .
+// Database resource
 type Database struct {
 	Resource
 }
 
-// User .
+// User resource
 type User struct {
 	Resource
 	DatabaseID string
 }
 
-// Permission .
+// Permission resource
 type Permission struct {
 	Resource
 	UserName   string
 	DatabaseID string
 }
 
-// Collection .
+// Collection resource
 type Collection struct {
 	Resource
 	DatabaseID string
 }
 
-// StoredProcedure .
+// StoredProcedure resource
 type StoredProcedure struct {
 	Resource
 }
 
-// Trigger .
+// Trigger resource
 type Trigger struct {
 	Resource
 }
 
-// UDF .
+// UDF resource
 type UDF struct {
 	Resource
 }
 
-// Document .
+// Document resource
 type Document struct {
 	Resource
 	DatabaseID   string
 	CollectionID string
 }
 
-// Attachment .
+// Attachment resource
 type Attachment struct {
 	Resource
 }
 
-// Offer .
+// Offer resource
 type Offer struct {
 	Resource
 }

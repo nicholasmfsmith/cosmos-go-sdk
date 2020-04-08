@@ -1,4 +1,5 @@
-
+// Package rest - utils source file contains utility funcs common to package.
+// TODO: Evaluate if this should live elsewhere
 package rest
 
 import "strings"
