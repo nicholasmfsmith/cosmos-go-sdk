@@ -1,24 +1,45 @@
 package rest_test
 
 import (
+	"bytes"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"cosmos-go-sdk/mocks"
 	. "cosmos-go-sdk/rest"
 )
 
 var _ = Describe("Rest", func() {
-	var resource []byte
-	var id string
+	var (
+		mockCtrl       *gomock.Controller
+		mockResource   *mocks.MockIResource
+		mockHttpClient *mocks.MockIHttpClient
+		body           []byte
+		id             string
+		partitionKey   string
+	)
 
 	BeforeEach(func() {
-		resource = []byte("This is a test resource")
+		mockCtrl = gomock.NewController(GinkgoT())
+		mockResource = mocks.NewMockIResource(mockCtrl)
+		mockHttpClient = mocks.NewMockIHttpClient(mockCtrl)
+		partitionKey = "testPartitionKey"
+		body = []byte(`{"id": "testID", "partitionKey": "partitionKeyValue", "field1": "value1"}`)
 		id = "1"
+	})
+
+	AfterEach(func() {
+		mockCtrl.Finish()
 	})
 
 	Context("Post", func() {
 		It("should successfully POST a resource in Azure", func() {
-			testPostResource, testPostError := Post(resource)
+			testPostResource, testPostError := Post(body)
 			Expect(testPostResource).To(Not(BeNil()))
 			Expect(testPostError).To(BeNil())
 		})
@@ -34,7 +55,26 @@ var _ = Describe("Rest", func() {
 
 	Context("Put", func() {
 		It("should successfully PUT a resource in Azure", func() {
-			testPutResource, testPutError := Put(id, resource)
+			// Set mocks
+			mockResource.EXPECT().BuildURI().Return("testURL", nil).Times(1)
+			mockResource.EXPECT().ResourceType().Return("testResourceType", nil).Times(1)
+			mockResource.EXPECT().ResourcePath().Return("testResourcePath", nil).Times(1)
+			// NOTE: "dGVzdEtleQ==" -> base64("testKey")
+			mockResource.EXPECT().Key().Return("dGVzdEtleQ==", nil).Times(1)
+
+			expectedRequest, _ := http.NewRequest(http.MethodPut, "testURL", bytes.NewBuffer(body))
+			expectedRequest.Header["x-ms-documentdb-partitionkey"] = []string{fmt.Sprintf(`["%s"]`, partitionKey)}
+			expectedRequest.Header["x-ms-version"] = []string{""}
+			expectedRequest.Header["x-ms-date"] = []string{""}
+			expectedRequest.Header["authorization"] = []string{""}
+
+			mockHttpClient.EXPECT().Do(expectedRequest).Return(&http.Response{
+				StatusCode: 200,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
+			}, nil).Times(1)
+
+			HTTPClient = mockHttpClient
+			testPutResource, testPutError := Put(mockResource, partitionKey, body)
 			Expect(testPutResource).To(Not(BeNil()))
 			Expect(testPutError).To(BeNil())
 		})
