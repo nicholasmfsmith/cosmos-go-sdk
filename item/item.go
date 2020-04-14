@@ -1,13 +1,15 @@
 // Package item provides CRUD operations for an Azure Cosmos Item.
+// https://docs.microsoft.com/en-us/rest/api/cosmos-db/documents
 package item
 
 // Item is the type that describes the Azure Cosmos Item.
 type Item struct {
-	id            string
-	partitionKey  string
-	databaseName  string
-	containerName string
-	key           string
+	id              string
+	databaseAccount string
+	databaseID      string
+	collectionID    string
+	key             string
+	partitionKey    string
 }
 
 /**
@@ -25,12 +27,13 @@ type IITem interface {
 **/
 
 // New returns an instance of the Item struct.
-func New(id, partitionKey, databaseName, containerName, key string) Item {
+func New(id, databaseAccount, databaseID, collectionID, partitionKey, key string) Item {
 	return Item{
 		id,
+		databaseAccount,
+		databaseID,
+		collectionID,
 		partitionKey,
-		databaseName,
-		containerName,
 		key,
 	}
 }

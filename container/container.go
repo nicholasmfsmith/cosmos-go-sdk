@@ -4,17 +4,19 @@ package container
 
 // Container defines the container client
 type Container struct {
-	name   string
-	dbName string
-	key    string
+	id              string
+	databaseAccount string
+	databaseID      string
+	key             string
 }
 
 // Client creates an instance of a container
 // It returns a Container Client
-func Client(name, dbName, key string) Container {
+func Client(id, databaseAccount, databaseID, key string) Container {
 	return Container{
-		name,
-		dbName,
+		id,
+		databaseAccount,
+		databaseID,
 		key,
 	}
 }

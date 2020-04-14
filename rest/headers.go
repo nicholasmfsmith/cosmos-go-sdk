@@ -22,9 +22,9 @@ const (
 	errRequiredHeaderMissing = "Required Request Header missing: %s"
 )
 
-// Required Headers
-// TODO: Determine if XMsSessionToken is always required
-func setRequiredHeaders(req *http.Request, headers map[string]string) error {
+// Set Headers
+// TODO: Research XMsSessionToken to determine if it is always required
+func setHeaders(req *http.Request, headers map[string]string) error {
 
 	if isEmpty(headers[Authorization]) {
 		return fmt.Errorf(errRequiredHeaderMissing, Authorization)

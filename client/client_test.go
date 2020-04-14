@@ -12,7 +12,7 @@ var _ = Describe("Client", func() {
 
 	var testClient *Client
 	BeforeEach(func() {
-		testClient = New("url", "key")
+		testClient = New("url", "account", "key")
 	})
 
 	Context("New", func() {

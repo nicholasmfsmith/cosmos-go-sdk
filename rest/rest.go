@@ -3,6 +3,7 @@
 package rest
 
 import (
+	rs "cosmos-go-sdk/resource"
 	"cosmos-go-sdk/rest/internal/token"
 	"fmt"
 	"net/http"
@@ -22,18 +23,18 @@ func Post(resource []byte) ([]byte, error) {
 // Get performs a GET HTTP request to the Azure API to read the resource
 // identified by the provided resource ID.
 // It returns an http.Response and error
-func Get(resource Resource, headers map[string]string, key string) (*http.Response, error) {
+func Get(resource rs.IResource, headers map[string]string, key string) (*http.Response, error) {
 
 	resourceType := fmt.Sprintf("%T", resource)
 
 	// Construct URI
-	uri, errURI := createGETURI(resource)
+	uri, errURI := resource.URI()
 	if errURI != nil {
 		return nil, errURI
 	}
 
 	// Construct Auth Token
-	token := token.New(http.MethodGet, resourceType, resource.ResourceID, key)
+	token := token.New(http.MethodGet, resourceType, resource.ID(), key)
 	errBuild := token.Build()
 	if errBuild != nil {
 		return nil, errBuild
@@ -42,15 +43,15 @@ func Get(resource Resource, headers map[string]string, key string) (*http.Respon
 
 	req, errRequest := http.NewRequest(http.MethodGet, uri, nil)
 	if errRequest != nil {
-		return &http.Response{}, errRequest
+		return nil, errRequest
 	}
 
-	errHeaders := setRequiredHeaders(req, headers)
+	errHeaders := setHeaders(req, headers)
 	if errHeaders != nil {
 		return nil, errHeaders
 	}
 
-	// TODO: Correct tests
+	// TODO: Mock for testing
 	// Send HTTP request
 	// client := &http.Client{Timeout: timeout}
 	// return client.Do(req)

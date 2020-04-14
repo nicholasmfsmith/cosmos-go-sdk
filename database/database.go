@@ -4,14 +4,16 @@ package database
 
 // Database defines the database client
 type Database struct {
-	name string
-	key  string
+	name            string
+	databaseAccount string
+	key             string
 }
 
 // New returns an instance of Database
-func New(name, key string) *Database {
+func New(name, databaseAccount, key string) *Database {
 	return &Database{
 		name,
+		databaseAccount,
 		key,
 	}
 }

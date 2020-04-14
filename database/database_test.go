@@ -11,7 +11,7 @@ var _ = Describe("Database", func() {
 
 	var testDatabase *Database
 	BeforeEach(func() {
-		testDatabase = New("name", "key")
+		testDatabase = New("name", "account", "key")
 	})
 
 	Context("New", func() {

@@ -1,10 +1,13 @@
 /*
-Package rest uris source file addresses the Resource URI Syntax spec
+Package rest . uris source file addresses the Resource URI Syntax spec
 https://docs.microsoft.com/en-us/rest/api/cosmos-db/cosmosdb-resource-uri-syntax-for-rest
+TODO: Implement URI in respective packages
 */
 package rest
 
+/*
 import (
+	rs "cosmos-go-sdk/resource"
 	"fmt"
 )
 
@@ -13,9 +16,10 @@ const (
 	errNoGETMethod         = "Error building GET URI: Cannot perform GET on resource:"
 	errInvalidResourceType = "Error building GET URI: Invalid Resource Type;"
 )
+*/
 
 /*
-buildGETURI creates GET request URI
+createGETURI creates GET request URI
 Base URI for a resource is composed of: DB account name,  List of resource types, names of req resource and its parents
 	- Database		https://{databaseaccount}.documents.azure.com/dbs/{db-id}
 	- User				https://{databaseaccount}.documents.azure.com/dbs/{db-id}/users/{user-name}
@@ -24,14 +28,15 @@ Base URI for a resource is composed of: DB account name,  List of resource types
 	- Document		https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-id}
 	- Offer				https://{databaseaccount}.documents.azure.com/offers/{_rid-offer}
 */
-func createGETURI(resource interface{}) (string, error) {
+/*
+func createGETURI(resource rs.IResource) (string, error) {
 	var uri string
 	var errURI error
 
 	switch resourceType := resource.(type) {
 	case Database:
 		uri, errURI = createURI("https://%s.documents.azure.com/dbs/%s",
-			resource.(Database).Account, resource.(Database).ResourceID)
+			resource.Account(), resource.ID())
 	case User:
 		uri, errURI = createURI("https://%s.documents.azure.com/dbs/%s/users/%s",
 			resource.(User).Account, resource.(User).DatabaseID,
@@ -79,3 +84,4 @@ func createURI(uri string, args ...interface{}) (string, error) {
 	uri = fmt.Sprintf(uri, args...)
 	return uri, nil
 }
+*/
