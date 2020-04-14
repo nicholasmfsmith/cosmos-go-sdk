@@ -70,7 +70,7 @@ var _ = Describe("Rest", func() {
 
 			HTTPClient = mockHttpClient
 			testPutResource, testPutError := Put(mockResource, partitionKey, body)
-			Expect(testPutResource).To(Not(BeNil()))
+			Expect(testPutResource).To(Equal([]byte(`{"key": "value"}`)))
 			Expect(testPutError).To(BeNil())
 		})
 	})
