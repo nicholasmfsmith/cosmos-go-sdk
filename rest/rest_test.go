@@ -62,6 +62,7 @@ var _ = Describe("Rest", func() {
 			// NOTE: "dGVzdEtleQ==" -> base64("testKey")
 			mockResource.EXPECT().Key().Return("dGVzdEtleQ==", nil).Times(1)
 
+			// TODO: [NS] Validate proper values are configured in http request passed into Do
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
 				StatusCode: 200,
 				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
