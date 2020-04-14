@@ -92,7 +92,6 @@ func Put(resource IResource, partitionKey string, body []byte) ([]byte, error) {
 	// Get token, if any error, return immediately
 	requestToken := token.New(http.MethodPut, resourceType, resourcePath, key)
 	requestTokenBuildErr := requestToken.Build()
-	fmt.Println("requestToken", requestToken.Token)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
