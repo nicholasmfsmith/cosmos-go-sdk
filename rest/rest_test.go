@@ -1,23 +1,30 @@
 package rest_test
 
 import (
-	. "cosmos-go-sdk/resource"
+	"cosmos-go-sdk/mocks"
 	. "cosmos-go-sdk/rest"
 
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Rest", func() {
-	var resource IResource
-	var key string
-	var headers map[string]string
+	// var resource IResource
+	// var key string
+	var (
+		mockCtrl     *gomock.Controller
+		mockResource *mocks.MockIResource
+		headers      map[string]string
+		key          string
+	)
 
 	// TODO: Dynamically test different resource types
 	BeforeEach(func() {
 		// resource = Database{
 		// }
-		key = "testKey"
+		mockCtrl = gomock.NewController(GinkgoT())
+		mockResource = mocks.NewMockIResource(mockCtrl)
 		headers = map[string]string{
 			Authorization:   "testAuthorization",
 			ContentType:     "testContentType",
@@ -25,6 +32,11 @@ var _ = Describe("Rest", func() {
 			XMsSessionToken: "testXMsSessionToken",
 			XMsVersion:      "testXMsVersion",
 		}
+		key = "testKey"
+	})
+
+	AfterEach(func() {
+		mockCtrl.Finish()
 	})
 
 	// Context("Post", func() {
@@ -37,7 +49,8 @@ var _ = Describe("Rest", func() {
 
 	Context("Get", func() {
 		It("should successfully GET a resource from Azure", func() {
-			testGetResource, testGetError := Get(resource, headers, key)
+			testGetResource, testGetError := Get(mockResource, headers, key)
+			mockResource.EXPECT().URI().Return("", nil).Times(1)
 			Expect(testGetResource).To(Not(BeNil()))
 			Expect(testGetError).To(BeNil())
 		})

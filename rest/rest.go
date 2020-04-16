@@ -3,7 +3,6 @@
 package rest
 
 import (
-	rs "cosmos-go-sdk/resource"
 	"cosmos-go-sdk/rest/internal/token"
 	"fmt"
 	"net/http"
@@ -23,7 +22,8 @@ func Post(resource []byte) ([]byte, error) {
 // Get performs a GET HTTP request to the Azure API to read the resource
 // identified by the provided resource ID.
 // It returns an http.Response and error
-func Get(resource rs.IResource, headers map[string]string, key string) (*http.Response, error) {
+// TODO: Utilize http.Headers type for headers
+func Get(resource IResource, headers map[string]string, key string) (*http.Response, error) {
 
 	resourceType := fmt.Sprintf("%T", resource)
 
