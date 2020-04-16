@@ -24,6 +24,7 @@ const (
 
 // Set Headers
 // TODO: Research XMsSessionToken to determine if it is always required
+// TODO: Utilize http.Headers type
 func setHeaders(req *http.Request, headers map[string]string) error {
 
 	if isEmpty(headers[Authorization]) {

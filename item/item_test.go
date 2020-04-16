@@ -16,7 +16,7 @@ var _ = Describe("Item", func() {
 
 	Context("New", func() {
 		It("should successfully return a new instance of Item", func() {
-			testItem = New("testId", "dbAccount", "testDatabaseName", "testContainerName", "testPartitionKey", "testKey")
+			testItem = New("testId", "testPartitionKey", "testDatabaseName", "testContainerName", "testKey")
 			Expect(testItem).To(BeAssignableToTypeOf(Item{}))
 		})
 	})

@@ -27,12 +27,6 @@ func Get(resource IResource, headers map[string]string, key string) (*http.Respo
 
 	resourceType := fmt.Sprintf("%T", resource)
 
-	// Construct URI
-	uri, errURI := resource.URI()
-	if errURI != nil {
-		return nil, errURI
-	}
-
 	// Construct Auth Token
 	token := token.New(http.MethodGet, resourceType, resource.ID(), key)
 	errBuild := token.Build()
@@ -40,6 +34,9 @@ func Get(resource IResource, headers map[string]string, key string) (*http.Respo
 		return nil, errBuild
 	}
 	headers[Authorization] = token.Token
+
+	// Get URI
+	uri := resource.URI()
 
 	req, errRequest := http.NewRequest(http.MethodGet, uri, nil)
 	if errRequest != nil {

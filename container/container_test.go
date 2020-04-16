@@ -11,7 +11,7 @@ var _ = Describe("Container", func() {
 
 	var testClient Container
 	BeforeEach(func() {
-		testClient = Client("name", "dbAccount", "dbName", "key")
+		testClient = Client("name", "dbName", "key")
 	})
 
 	Context("Client", func() {
