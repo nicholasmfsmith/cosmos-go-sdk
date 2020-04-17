@@ -54,6 +54,7 @@ var _ = Describe("Rest", func() {
 	})
 
 	Context("Put", func() {
+		// TODO: [NS] ADD MORE TESTS!
 		It("should successfully PUT a resource in Azure", func() {
 			// TODO: [NS] Figure out how to mock Token package
 			// Set mocks
