@@ -32,62 +32,44 @@ func (m *MockIResource) EXPECT() *MockIResourceMockRecorder {
 	return m.recorder
 }
 
-// BuildURI mocks base method
-func (m *MockIResource) BuildURI() (string, error) {
+// PartitionKey mocks base method
+func (m *MockIResource) PartitionKey() string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BuildURI")
+	ret := m.ctrl.Call(m, "PartitionKey")
 	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
-// BuildURI indicates an expected call of BuildURI
-func (mr *MockIResourceMockRecorder) BuildURI() *gomock.Call {
+// PartitionKey indicates an expected call of PartitionKey
+func (mr *MockIResourceMockRecorder) PartitionKey() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BuildURI", reflect.TypeOf((*MockIResource)(nil).BuildURI))
-}
-
-// Key mocks base method
-func (m *MockIResource) Key() (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Key")
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Key indicates an expected call of Key
-func (mr *MockIResourceMockRecorder) Key() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Key", reflect.TypeOf((*MockIResource)(nil).Key))
-}
-
-// ResourcePath mocks base method
-func (m *MockIResource) ResourcePath() (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourcePath")
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ResourcePath indicates an expected call of ResourcePath
-func (mr *MockIResourceMockRecorder) ResourcePath() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourcePath", reflect.TypeOf((*MockIResource)(nil).ResourcePath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PartitionKey", reflect.TypeOf((*MockIResource)(nil).PartitionKey))
 }
 
 // ResourceType mocks base method
-func (m *MockIResource) ResourceType() (string, error) {
+func (m *MockIResource) ResourceType() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResourceType")
 	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ResourceType indicates an expected call of ResourceType
 func (mr *MockIResourceMockRecorder) ResourceType() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceType", reflect.TypeOf((*MockIResource)(nil).ResourceType))
+}
+
+// URI mocks base method
+func (m *MockIResource) URI() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "URI")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// URI indicates an expected call of URI
+func (mr *MockIResourceMockRecorder) URI() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "URI", reflect.TypeOf((*MockIResource)(nil).URI))
 }

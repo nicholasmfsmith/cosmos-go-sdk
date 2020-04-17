@@ -28,8 +28,6 @@ var (
 	HTTPClient IHttpClient
 )
 
-// TODO: [NS] Explore better ways to override HTTP client for testing
-
 // IHttpClient is an interface used to override the real HTTP client for testing
 type IHttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -38,10 +36,9 @@ type IHttpClient interface {
 // IResource is an interface to define the contract between any resource and this package.
 // All resources must be able to build their URI and provide their resource type, path, and primary key
 type IResource interface {
-	BuildURI() (string, error)
-	ResourceType() (string, error)
-	ResourcePath() (string, error)
-	Key() (string, error)
+	URI() string
+	ResourceType() string
+	PartitionKey() string
 }
 
 // TODO: [NS] Explore better ways to override HTTP client for testing
@@ -70,26 +67,14 @@ func Get(id string) ([]byte, error) {
 // It returns the updated resource as a byte array and any errors encountered.
 // TODO: [NS] How should partitionKey be handled? Should it be optional?
 // TODO: [NS] Add better error messages
-func Put(resource IResource, partitionKey string, body []byte) ([]byte, error) {
+func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	// Get required data points from calling resource, if error return immediately
-	uri, buildURIErr := resource.BuildURI()
-	if buildURIErr != nil {
-		return nil, buildURIErr
-	}
-	resourceType, resourceTypeErr := resource.ResourceType()
-	if resourceTypeErr != nil {
-		return nil, resourceTypeErr
-	}
-	resourcePath, resourcePathErr := resource.ResourcePath()
-	if resourcePathErr != nil {
-		return nil, resourcePathErr
-	}
-	key, keyErr := resource.Key()
-	if keyErr != nil {
-		return nil, keyErr
-	}
+	uri := resource.URI()
+	resourceType := resource.ResourceType()
+	resourcePath := extractResourcePathFromURI(uri)
 
 	// Get token, if any error, return immediately
+	// TODO: [NS] Improve Token interface
 	requestToken := token.New(http.MethodPut, resourceType, resourcePath, key)
 	requestTokenBuildErr := requestToken.Build()
 	if requestTokenBuildErr != nil {
@@ -97,7 +82,7 @@ func Put(resource IResource, partitionKey string, body []byte) ([]byte, error) {
 	}
 
 	// Notice the format required for the partition Key
-	partitionKey = fmt.Sprintf(`["%s"]`, partitionKey)
+	partitionKey := fmt.Sprintf(`["%s"]`, resource.PartitionKey())
 
 	// Create request
 	req, newRequestErr := http.NewRequest(http.MethodPut, uri, bytes.NewBuffer(body))
@@ -129,4 +114,15 @@ func Put(resource IResource, partitionKey string, body []byte) ([]byte, error) {
 // It returns any errors encountered.
 func Delete(id string) error {
 	return nil
+}
+
+// Note: URI follows the below format:
+// https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
+// TODO: [NS] Add unit tests
+func extractResourcePathFromURI(uri string) string {
+	res := strings.Split(uri, ".com")
+	if len(res) < 2 {
+		return ""
+	}
+	return res[1]
 }

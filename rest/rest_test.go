@@ -20,16 +20,17 @@ var _ = Describe("Rest", func() {
 		mockHttpClient *mocks.MockIHttpClient
 		body           []byte
 		id             string
-		partitionKey   string
+		key            string
 	)
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockResource = mocks.NewMockIResource(mockCtrl)
 		mockHttpClient = mocks.NewMockIHttpClient(mockCtrl)
-		partitionKey = "testPartitionKey"
 		body = []byte(`{"id": "testID", "partitionKey": "partitionKeyValue", "field1": "value1"}`)
 		id = "1"
+		// NOTE: "dGVzdEtleQ==" -> base64("testKey")
+		key = "dGVzdEtleQ=="
 	})
 
 	AfterEach(func() {
@@ -56,11 +57,9 @@ var _ = Describe("Rest", func() {
 		It("should successfully PUT a resource in Azure", func() {
 			// TODO: [NS] Figure out how to mock Token package
 			// Set mocks
-			mockResource.EXPECT().BuildURI().Return("testURL", nil).Times(1)
-			mockResource.EXPECT().ResourceType().Return("testResourceType", nil).Times(1)
-			mockResource.EXPECT().ResourcePath().Return("testResourcePath", nil).Times(1)
-			// NOTE: "dGVzdEtleQ==" -> base64("testKey")
-			mockResource.EXPECT().Key().Return("dGVzdEtleQ==", nil).Times(1)
+			mockResource.EXPECT().URI().Return("https://mock-test-database-account.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}").Times(1)
+			mockResource.EXPECT().ResourceType().Return("testResourceType").Times(1)
+			mockResource.EXPECT().PartitionKey().Return("partitionKeyValue").Times(1)
 
 			// TODO: [NS] Validate proper values are configured in http request passed into Do
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
@@ -69,7 +68,7 @@ var _ = Describe("Rest", func() {
 			}, nil).Times(1)
 
 			HTTPClient = mockHttpClient
-			testPutResource, testPutError := Put(mockResource, partitionKey, body)
+			testPutResource, testPutError := Put(mockResource, key, body)
 			Expect(testPutResource).To(Equal([]byte(`{"key": "value"}`)))
 			Expect(testPutError).To(BeNil())
 		})
