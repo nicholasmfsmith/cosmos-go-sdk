@@ -97,6 +97,8 @@ func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	req.Header["authorization"] = []string{requestToken.Token}
 	req.Header["content-type"] = []string{"application/json"}
 
+	// TODO: [NS] Handle optional headers
+
 	resp, requestErr := HTTPClient.Do(req)
 	if requestErr != nil {
 		return nil, requestErr
