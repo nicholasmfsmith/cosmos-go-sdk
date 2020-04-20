@@ -74,9 +74,8 @@ func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	resourcePath := extractResourcePathFromURI(uri)
 
 	// Get token, if any error, return immediately
-	// TODO: [NS] Improve Token interface
-	requestToken := token.New(http.MethodPut, resourceType, resourcePath, key)
-	requestTokenBuildErr := requestToken.Build()
+	requestToken := &token.Token{}
+	currentToken, requestTokenBuildErr := requestToken.Build(http.MethodPut, resourceType, resourcePath, key)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
@@ -94,7 +93,7 @@ func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	req.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
 	req.Header["x-ms-version"] = []string{apiVersion}
 	req.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
-	req.Header["authorization"] = []string{requestToken.Token}
+	req.Header["authorization"] = []string{currentToken}
 	req.Header["content-type"] = []string{"application/json"}
 
 	// TODO: [NS] Handle optional headers
