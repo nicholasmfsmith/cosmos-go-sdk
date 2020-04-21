@@ -13,13 +13,17 @@ var _ = Describe("Attachment", func() {
 
 	BeforeEach(func() {
 		partitionKey = "key"
-
 		testAttachment = New(partitionKey)
+	})
+
+	Context("New", func() {
+		It("return a new instance of an Attachment", func() {
+			Expect(testAttachment).To(BeAssignableToTypeOf(&Attachment{}))
+		})
 	})
 
 	Context("URI", func() {
 		It("should successfully return value of URI", func() {
-			Expect(testAttachment).To(BeAssignableToTypeOf(&Attachment{}))
 			testURI := testAttachment.URI()
 			Expect(testURI).To(Equal(""))
 		})
@@ -27,7 +31,6 @@ var _ = Describe("Attachment", func() {
 
 	Context("ResourceType", func() {
 		It("should successfully return value of URI", func() {
-			Expect(testAttachment).To(BeAssignableToTypeOf(&Attachment{}))
 			testResourceType := testAttachment.ResourceType()
 			Expect(testResourceType).To(Equal(""))
 		})
@@ -35,7 +38,6 @@ var _ = Describe("Attachment", func() {
 
 	Context("PartitionKey", func() {
 		It("should successfully return value of URI", func() {
-			Expect(testAttachment).To(BeAssignableToTypeOf(&Attachment{}))
 			testPartitionKey := testAttachment.PartitionKey()
 			Expect(testPartitionKey).To(Equal(""))
 		})

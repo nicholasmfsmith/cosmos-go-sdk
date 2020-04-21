@@ -14,8 +14,8 @@ type Container struct {
 
 // Client creates an instance of a container
 // It returns a Container Client
-func Client(name, dbName, key string) Container {
-	return Container{
+func Client(name, dbName, key string) *Container {
+	return &Container{
 		name,
 		dbName,
 		key,
