@@ -47,8 +47,20 @@ var _ = Describe("Rest", func() {
 
 	Context("Get", func() {
 		It("should successfully GET a resource from Azure", func() {
-			testGetResource, testGetError := Get(id)
-			Expect(testGetResource).To(Not(BeNil()))
+
+			// Set Mocks - URI, ResourceType, resourcePath
+			mockResource.EXPECT().URI().Return("https://mock-test-database-account.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}").Times(1)
+			mockResource.EXPECT().ResourceType().Return("testResourceType").Times(1)
+			mockResource.EXPECT().PartitionKey().Return("partitionKeyValue").Times(1)
+
+			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
+				StatusCode: 200,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
+			}, nil).Times(1)
+
+			HTTPClient = mockHttpClient
+			testGetResource, testGetError := Get(mockResource, key)
+			Expect(testGetResource).To(Equal([]byte(`{"key": "value"}`)))
 			Expect(testGetError).To(BeNil())
 		})
 	})
