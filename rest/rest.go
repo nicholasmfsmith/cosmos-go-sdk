@@ -1,5 +1,6 @@
 // Package rest provides functionality to handle
 // the HTTP interactions with the Azure API.
+// TODO: Implementation of HTTP specific errors
 package rest
 
 import (
@@ -58,8 +59,42 @@ func Post(resource []byte) ([]byte, error) {
 // Get performs a GET HTTP request to the Azure API to read the resource
 // identified by the provided resource ID.
 // It returns the requested resource as a byte array and any errors encountered.
-func Get(id string) ([]byte, error) {
-	return []byte(""), nil
+func Get(resource IResource, key string) ([]byte, error) {
+
+	uri := resource.URI()
+	resourceType := resource.ResourceType()
+	resourcePath := extractResourcePathFromURI(uri)
+	partitionKey := resource.PartitionKey()
+
+	token := token.New(http.MethodGet, resourceType, resourcePath, key)
+	errBuild := token.Build()
+	if errBuild != nil {
+		return nil, errBuild
+	}
+
+	request, errNewRequest := http.NewRequest(http.MethodGet, uri, nil)
+	if errNewRequest != nil {
+		return nil, errNewRequest
+	}
+
+	// TODO: Adding optional headers in a separate PR
+	request.Header["authorization"] = []string{token.Token}
+	request.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
+	request.Header["x-ms-version"] = []string{apiVersion}
+	request.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+
+	response, errRequest := HTTPClient.Do(request)
+	if errRequest != nil {
+		return nil, errRequest
+	}
+	defer response.Body.Close()
+
+	responseBody, errReadResponseBody := ioutil.ReadAll(response.Body)
+	if errReadResponseBody != nil {
+		return nil, errReadResponseBody
+	}
+
+	return responseBody, nil
 }
 
 // Put performs a PUT HTTP request to the Azure API for the provided
