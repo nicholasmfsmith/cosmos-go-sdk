@@ -9,8 +9,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"cosmos-go-sdk/mocks"
 	. "cosmos-go-sdk/rest"
+	"cosmos-go-sdk/testdata/mocks"
 )
 
 var _ = Describe("Rest", func() {
