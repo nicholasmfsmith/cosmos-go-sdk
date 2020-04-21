@@ -12,21 +12,6 @@ type Item struct {
 	partitionKey  string
 }
 
-// URI returns the resource identifier of resource
-func (i *Item) URI() string {
-	return ""
-}
-
-// ResourceType returns the resourceType of
-func (i *Item) ResourceType() string {
-	return ""
-}
-
-// PartitionKey .
-func (i *Item) PartitionKey() string {
-	return ""
-}
-
 /**
 TODO: [NS] Remove the interface below. It should be standardized across all sub-resources of container to have a single contract between container and all child resources
 type IITem interface {
@@ -78,4 +63,19 @@ func (i *Item) Update(document []byte) error {
 // It returns any errors encountered.
 func (i *Item) Delete() error {
 	return nil
+}
+
+// URI returns the resource identifier of resource
+func (i *Item) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (i *Item) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (i *Item) PartitionKey() string {
+	return ""
 }

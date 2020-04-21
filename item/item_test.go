@@ -52,4 +52,25 @@ var _ = Describe("Item", func() {
 			Expect(testDeleteError).To(BeNil())
 		})
 	})
+
+	Context("URI", func() {
+		It("should successfully return value of URI", func() {
+			testURI := testItem.URI()
+			Expect(testURI).To(Equal(""))
+		})
+	})
+
+	Context("ResourceType", func() {
+		It("should successfully return value of ResourceType", func() {
+			testResourceType := testItem.ResourceType()
+			Expect(testResourceType).To(Equal(""))
+		})
+	})
+
+	Context("PartitionKey", func() {
+		It("should successfully return value of PartitionKey", func() {
+			testPartitionKey := testItem.PartitionKey()
+			Expect(testPartitionKey).To(Equal(""))
+		})
+	})
 })
