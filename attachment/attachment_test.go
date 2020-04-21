@@ -30,14 +30,14 @@ var _ = Describe("Attachment", func() {
 	})
 
 	Context("ResourceType", func() {
-		It("should successfully return value of URI", func() {
+		It("should successfully return value of ResourceType", func() {
 			testResourceType := testAttachment.ResourceType()
 			Expect(testResourceType).To(Equal(""))
 		})
 	})
 
 	Context("PartitionKey", func() {
-		It("should successfully return value of URI", func() {
+		It("should successfully return value of PartitionKey", func() {
 			testPartitionKey := testAttachment.PartitionKey()
 			Expect(testPartitionKey).To(Equal(""))
 		})

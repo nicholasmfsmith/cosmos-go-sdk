@@ -11,21 +11,6 @@ type Database struct {
 	partitionKey string
 }
 
-// URI returns the resource identifier of resource
-func (d *Database) URI() string {
-	return ""
-}
-
-// ResourceType returns the resourceType of
-func (d *Database) ResourceType() string {
-	return ""
-}
-
-// PartitionKey .
-func (d *Database) PartitionKey() string {
-	return ""
-}
-
 // New returns an instance of Database
 func New(name, key string) *Database {
 	return &Database{
@@ -50,12 +35,27 @@ type Entity struct {
 
 // Get fetches a Database by id
 // It returns a Database entity
-func (database *Database) Get(id string) (Entity, error) {
+func (d *Database) Get(id string) (Entity, error) {
 	return Entity{}, nil
 }
 
 // Delete an Database entity
 // It returns deleted database entity
-func (database *Database) Delete() error {
+func (d *Database) Delete() error {
 	return nil
+}
+
+// URI returns the resource identifier of resource
+func (d *Database) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType
+func (d *Database) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (d *Database) PartitionKey() string {
+	return ""
 }

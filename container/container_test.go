@@ -37,7 +37,7 @@ var _ = Describe("Container", func() {
 	})
 
 	Context("Replace", func() {
-		It("should successfully fetch an Container Document", func() {
+		It("should successfully fetch a Container Document", func() {
 			testEntity := Entity{}
 			container, testReplaceError := testClient.Replace(testEntity)
 			Expect(testReplaceError).To(BeNil())
@@ -53,14 +53,14 @@ var _ = Describe("Container", func() {
 	})
 
 	Context("ResourceType", func() {
-		It("should successfully return value of URI", func() {
+		It("should successfully return value of ResourceType", func() {
 			testResourceType := testClient.ResourceType()
 			Expect(testResourceType).To(Equal(""))
 		})
 	})
 
 	Context("PartitionKey", func() {
-		It("should successfully return value of URI", func() {
+		It("should successfully return value of PartitionKey", func() {
 			testPartitionKey := testClient.PartitionKey()
 			Expect(testPartitionKey).To(Equal(""))
 		})
