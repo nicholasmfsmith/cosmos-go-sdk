@@ -16,6 +16,15 @@ type Attachment struct {
 	partitionKey    string
 }
 
+// New returns a new instance of an Attachment resource
+func New(partitionKey string) *Attachment {
+	return &Attachment{
+		uri:          "",
+		resourceType: "",
+		partitionKey: partitionKey,
+	}
+}
+
 // URI returns the resource identifier of resource
 func (a *Attachment) URI() string {
 	return ""
