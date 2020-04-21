@@ -4,10 +4,27 @@ package item
 // Item is the type that describes the Azure Cosmos Item.
 type Item struct {
 	id            string
-	partitionKey  string
 	databaseName  string
 	containerName string
 	key           string
+	uri           string
+	resourceType  string
+	partitionKey  string
+}
+
+// URI returns the resource identifier of resource
+func (i *Item) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (i *Item) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (i *Item) PartitionKey() string {
+	return ""
 }
 
 /**
@@ -32,6 +49,7 @@ func New(id, partitionKey, databaseName, containerName, key string) Item {
 		databaseName,
 		containerName,
 		key,
+		"", "",
 	}
 }
 
@@ -40,24 +58,24 @@ func New(id, partitionKey, databaseName, containerName, key string) Item {
 
 // Create creates an Item in the Azure Cosmos Database Container.
 // It returns any errors encountered.
-func (item Item) Create(document []byte) error {
+func (i *Item) Create(document []byte) error {
 	return nil
 }
 
 // Read reads an Item in the Azure Cosmos Database Container.
 // It returns a byte array of the item in the Azure Cosmos Database Container and any errors encountered.
-func (item Item) Read() ([]byte, error) {
+func (i *Item) Read() ([]byte, error) {
 	return []byte(""), nil
 }
 
 // Update updates an Item in the Azure Cosmos Database Container.
 // It returns any errors encountered.
-func (item Item) Update(document []byte) error {
+func (i *Item) Update(document []byte) error {
 	return nil
 }
 
 // Delete deletes an Item in the Azure Cosmos Database Container.
 // It returns any errors encountered.
-func (item Item) Delete() error {
+func (i *Item) Delete() error {
 	return nil
 }

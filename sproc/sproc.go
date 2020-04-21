@@ -8,4 +8,22 @@ package sproc
 type StoredProcedure struct {
 	id              string
 	databaseAccount string
+	uri             string
+	resourceType    string
+	partitionKey    string
+}
+
+// URI returns the resource identifier of resource
+func (s *StoredProcedure) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (s *StoredProcedure) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (s *StoredProcedure) PartitionKey() string {
+	return ""
 }

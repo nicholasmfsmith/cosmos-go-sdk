@@ -4,8 +4,26 @@ package database
 
 // Database defines the database client
 type Database struct {
-	name string
-	key  string
+	name         string
+	key          string
+	uri          string
+	resourceType string
+	partitionKey string
+}
+
+// URI returns the resource identifier of resource
+func (d *Database) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (d *Database) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (d *Database) PartitionKey() string {
+	return ""
 }
 
 // New returns an instance of Database
@@ -13,6 +31,9 @@ func New(name, key string) *Database {
 	return &Database{
 		name,
 		key,
+		"",
+		"",
+		"",
 	}
 }
 

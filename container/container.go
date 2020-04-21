@@ -4,9 +4,12 @@ package container
 
 // Container defines the container client
 type Container struct {
-	name   string
-	dbName string
-	key    string
+	name         string
+	dbName       string
+	key          string
+	uri          string
+	resourceType string
+	partitionKey string
 }
 
 // Client creates an instance of a container
@@ -16,6 +19,7 @@ func Client(name, dbName, key string) Container {
 		name,
 		dbName,
 		key,
+		"", "", "",
 	}
 }
 
@@ -64,21 +68,21 @@ type ExcludedPaths struct {
 
 // Get fetches a Container Entity by id
 // It returns a Container Entity struct
-func (client *Container) Get() (Entity, error) {
+func (c *Container) Get() (Entity, error) {
 	// TODO - [SC] implement Get
 	return Entity{}, nil
 }
 
 // Delete deletes an container
 // It returns nil if successfull
-func (client *Container) Delete() error {
+func (c *Container) Delete() error {
 	// TODO - [SC] implement Delete
 	return nil
 }
 
 // Replace upserts a container to a given database
 // It returns a Container Entity struct
-func (client *Container) Replace(document Entity) (Entity, error) {
+func (c *Container) Replace(document Entity) (Entity, error) {
 	// TODO - [SC] implement Replace
 	return Entity{}, nil
 }
@@ -89,3 +93,18 @@ func (client *Container) Replace(document Entity) (Entity, error) {
 // func (client *Container) GetPartitionKeyRanges() *Entity {
 // 	return nil
 // }
+
+// URI returns the resource identifier of resource
+func (c *Container) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (c *Container) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (c *Container) PartitionKey() string {
+	return ""
+}

@@ -11,4 +11,22 @@ type Attachment struct {
 	databaseID      string
 	collectionID    string
 	documentID      string
+	uri             string
+	resourceType    string
+	partitionKey    string
+}
+
+// URI returns the resource identifier of resource
+func (a *Attachment) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (a *Attachment) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (a *Attachment) PartitionKey() string {
+	return ""
 }

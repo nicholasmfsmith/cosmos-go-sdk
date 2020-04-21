@@ -8,4 +8,22 @@ package trigger
 type Trigger struct {
 	id              string
 	databaseAccount string
+	uri             string
+	resourceType    string
+	partitionKey    string
+}
+
+// URI returns the resource identifier of resource
+func (t *Trigger) URI() string {
+	return ""
+}
+
+// ResourceType returns the resourceType of
+func (t *Trigger) ResourceType() string {
+	return ""
+}
+
+// PartitionKey .
+func (t *Trigger) PartitionKey() string {
+	return ""
 }
