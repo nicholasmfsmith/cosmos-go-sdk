@@ -66,10 +66,11 @@ func Get(resource IResource, key string) ([]byte, error) {
 	resourcePath := extractResourcePathFromURI(uri)
 	partitionKey := resource.PartitionKey()
 
-	token := token.New(http.MethodGet, resourceType, resourcePath, key)
-	errBuild := token.Build()
-	if errBuild != nil {
-		return nil, errBuild
+	// Get token, if any error, return immediately
+	requestToken := &token.Token{}
+	currentToken, requestTokenBuildErr := requestToken.Build(http.MethodGet, resourceType, resourcePath, key)
+	if requestTokenBuildErr != nil {
+		return nil, requestTokenBuildErr
 	}
 
 	request, errNewRequest := http.NewRequest(http.MethodGet, uri, nil)
@@ -78,7 +79,7 @@ func Get(resource IResource, key string) ([]byte, error) {
 	}
 
 	// TODO: Adding optional headers in a separate PR
-	request.Header["authorization"] = []string{token.Token}
+	request.Header["authorization"] = []string{currentToken}
 	request.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
 	request.Header["x-ms-version"] = []string{apiVersion}
 	request.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
@@ -109,9 +110,8 @@ func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	resourcePath := extractResourcePathFromURI(uri)
 
 	// Get token, if any error, return immediately
-	// TODO: [NS] Improve Token interface
-	requestToken := token.New(http.MethodPut, resourceType, resourcePath, key)
-	requestTokenBuildErr := requestToken.Build()
+	requestToken := &token.Token{}
+	currentToken, requestTokenBuildErr := requestToken.Build(http.MethodPut, resourceType, resourcePath, key)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
@@ -129,7 +129,7 @@ func Put(resource IResource, key string, body []byte) ([]byte, error) {
 	req.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
 	req.Header["x-ms-version"] = []string{apiVersion}
 	req.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
-	req.Header["authorization"] = []string{requestToken.Token}
+	req.Header["authorization"] = []string{currentToken}
 	req.Header["content-type"] = []string{"application/json"}
 
 	// TODO: [NS] Handle optional headers
