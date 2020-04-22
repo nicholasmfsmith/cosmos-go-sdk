@@ -64,7 +64,9 @@ func Get(resource IResource, key string) ([]byte, error) {
 	uri := resource.URI()
 	resourceType := resource.ResourceType()
 	resourcePath := extractResourcePathFromURI(uri)
-	partitionKey := resource.PartitionKey()
+
+	// Notice the format required for the partition Key
+	partitionKey := fmt.Sprintf(`["%s"]`, resource.PartitionKey())
 
 	// Get token, if any error, return immediately
 	requestToken := &token.Token{}
@@ -157,7 +159,7 @@ func Delete(id string) error {
 // https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
 // TODO: [NS] Add unit tests
 func extractResourcePathFromURI(uri string) string {
-	res := strings.Split(uri, ".com")
+	res := strings.Split(uri, ".com/")
 	if len(res) < 2 {
 		return ""
 	}
