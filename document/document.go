@@ -5,19 +5,23 @@ import "cosmos-go-sdk/rest"
 
 // Document is the type that describes the Azure Cosmos document.
 type Document struct {
-	id           string
-	partitionKey string
-	uri          string
-	key          string
+	ID           string
+	PartitionKey string
+	URI          string
+	Key          string
+	Request      rest.IRequest
 }
 
 // New returns an instance of the document struct.
 func New(id, partitionKey, containerURI, key string) Document {
+	uri := containerURI + "/docs/" + id
 	return Document{
 		id,
 		partitionKey,
-		containerURI + "/docs/" + id,
+		uri,
 		key,
+		// TODO: [NS] Create util function for building URI
+		rest.New(uri, "docs", key),
 	}
 }
 
@@ -33,7 +37,7 @@ func (document Document) Create(doc []byte) error {
 // Read reads a document in the Azure Cosmos Database Container.
 // It returns a byte array of the document in the Azure Cosmos Database Container and any errors encountered.
 func (document Document) Read() ([]byte, error) {
-	doc, err := rest.Get()
+	doc, err := document.Request.Get()
 	if err != nil {
 		return nil, err
 	}
@@ -50,15 +54,4 @@ func (document Document) Update(doc []byte) error {
 // It returns any errors encountered.
 func (document Document) Delete() error {
 	return nil
-}
-
-func (document Document) URI() string {
-	return document.uri
-}
-func (document Document) ResourceType() string {
-	return "docs"
-
-}
-func (document Document) PartitionKey() string {
-	return document.partitionKey
 }
