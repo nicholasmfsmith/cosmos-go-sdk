@@ -14,13 +14,13 @@ type Document struct {
 
 // New returns an instance of the document struct.
 func New(id, partitionKey, containerURI, key string) Document {
+	// TODO: [NS] Create util function for building URI
 	uri := containerURI + "/docs/" + id
 	return Document{
 		id,
 		partitionKey,
 		uri,
 		key,
-		// TODO: [NS] Create util function for building URI
 		rest.New(uri, "docs", key),
 	}
 }
