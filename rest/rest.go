@@ -19,7 +19,7 @@ const (
 	requestTimeout = 30 * time.Second
 )
 
-// IRequest is the interface that defines the functionality that can be performed on a Request
+// IRequest is the interface that defines the functionality of the rest package
 type IRequest interface {
 	Get() ([]byte, error)
 	Post(resource []byte) ([]byte, error)
