@@ -24,7 +24,7 @@ var _ = Describe("Client", func() {
 	Context("Database", func() {
 		It("should successfully return a new instance of Database with the current instance of Client", func() {
 			db := testClient.Database("name")
-			Expect(db).To(BeAssignableToTypeOf(&database.Database{}))
+			Expect(db).To(BeAssignableToTypeOf(database.Database{}))
 		})
 	})
 })
