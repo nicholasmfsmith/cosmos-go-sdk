@@ -169,5 +169,14 @@ func extractResourcePathFromURI(uri string) (string, error) {
    if err != nil {
        return "", err
    }
-   return u.Path, nil
+   path := u.Path
+   // Note: We could have the following 3 cases
+   // {host}/{path} in this case we return path
+   // {host}/ in this case we return the empty string
+   // {host} in this case we return the empty string
+   if path[0:1] == "/" {
+		path = path[1:]
+   }
+
+   return path, nil
 }
