@@ -1,4 +1,4 @@
-package item_test
+package document_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestItem(t *testing.T) {
+func TestDocument(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Item Suite")
+	RunSpecs(t, "Document Suite")
 }
