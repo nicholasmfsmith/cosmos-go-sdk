@@ -61,7 +61,48 @@ func New(uri, resourceType, key string) Request {
 // Post performs a POST HTTP request to the Azure API to create the provided resource.
 // It returns the created resource as a byte array and any errors encountered.
 func (request Request) Post(resource []byte) ([]byte, error) {
-	return []byte(""), nil
+	resourcePath, invalidURIError := extractResourcePathFromURI(request.URI)
+	if invalidURIError != nil {
+		return nil, invalidURIError
+	}
+
+	// Get token, if any error, return immediately
+	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodPost, request.ResourceType, resourcePath, request.Key)
+	if requestTokenBuildErr != nil {
+		return nil, requestTokenBuildErr
+	}
+
+	// TODO: [NS] Figure out how to handle partition key
+	// Notice the format required for the partition Key
+	// partitionKey := fmt.Sprintf(`["%s"]`, resource.PartitionKey())
+
+	// Create request
+	currentHTTPRequest, newRequestErr := http.NewRequest(http.MethodPost, request.URI, bytes.NewBuffer(resource))
+	if newRequestErr != nil {
+		return nil, newRequestErr
+	}
+
+	// Assign required headers
+	// currentHTTPRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
+	currentHTTPRequest.Header["x-ms-version"] = []string{apiVersion}
+	currentHTTPRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+	currentHTTPRequest.Header["authorization"] = []string{currentToken}
+	// Note Content-type is required for PUT/POST
+	currentHTTPRequest.Header["content-type"] = []string{"application/json"}
+
+	// TODO: [NS] Handle optional headers
+
+	resp, requestErr := request.HTTP.Do(currentHTTPRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+	defer resp.Body.Close()
+
+	respBody, readRespBodyErr := ioutil.ReadAll(resp.Body)
+	if readRespBodyErr != nil {
+		return nil, readRespBodyErr
+	}
+	return respBody, nil
 }
 
 // Get performs a GET HTTP request to the Azure API to read the resource
@@ -137,6 +178,7 @@ func (request Request) Put(resource []byte) ([]byte, error) {
 	currentHTTPRequest.Header["x-ms-version"] = []string{apiVersion}
 	currentHTTPRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
 	currentHTTPRequest.Header["authorization"] = []string{currentToken}
+	// Note Content-type is required for PUT/POST
 	currentHTTPRequest.Header["content-type"] = []string{"application/json"}
 
 	// TODO: [NS] Handle optional headers
@@ -165,18 +207,18 @@ func (request Request) Delete() error {
 // https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
 // TODO: [SC] Add unit tests
 func extractResourcePathFromURI(uri string) (string, error) {
-   u, err := url.Parse(uri)
-   if err != nil {
-       return "", err
-   }
-   path := u.Path
-   // Note: We could have the following 3 cases
-   // {host}/{path} in this case we return path
-   // {host}/ in this case we return the empty string
-   // {host} in this case we return the empty string
-   if path[0:1] == "/" {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return "", err
+	}
+	path := u.Path
+	// Note: We could have the following 3 cases
+	// {host}/{path} in this case we return path
+	// {host}/ in this case we return the empty string
+	// {host} in this case we return the empty string
+	if path[0:1] == "/" {
 		path = path[1:]
-   }
+	}
 
-   return path, nil
+	return path, nil
 }

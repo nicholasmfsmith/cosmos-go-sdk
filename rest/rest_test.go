@@ -2,6 +2,7 @@ package rest_test
 
 import (
 	"bytes"
+	"errors"
 	"io/ioutil"
 	"net/http"
 
@@ -62,9 +63,26 @@ var _ = Describe("Rest", func() {
 
 	Context("Post", func() {
 		It("should successfully POST a resource in Azure", func() {
+			// TODO: [NS] Validate proper values are configured in http request passed into Do
+			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
+				StatusCode: 201,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
+			}, nil).Times(1)
+			mockToken.EXPECT().Build(http.MethodPost, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
+
 			testPostResource, testPostError := testRequest.Post(resource)
-			Expect(testPostResource).To(Not(BeNil()))
+			Expect(testPostResource).To(Equal([]byte(`{"key": "value"}`)))
 			Expect(testPostError).To(BeNil())
+		})
+
+		It("should gracefully handle errors when performing a POST for a resource in Azure", func() {
+			testError := errors.New("This is a test HTTP client error")
+			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(nil, testError).Times(1)
+			mockToken.EXPECT().Build(http.MethodPost, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
+
+			testPostResource, testPostError := testRequest.Post(resource)
+			Expect(testPostResource).To(BeNil())
+			Expect(testPostError.Error()).To(Equal("This is a test HTTP client error"))
 		})
 	})
 
@@ -92,9 +110,9 @@ var _ = Describe("Rest", func() {
 			}, nil).Times(1)
 			mockToken.EXPECT().Build(http.MethodPut, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
 
-			testGetResource, testGetError := testRequest.Put(resource)
-			Expect(testGetResource).To(Equal([]byte(`{"key": "value"}`)))
-			Expect(testGetError).To(BeNil())
+			testPutResource, testPutError := testRequest.Put(resource)
+			Expect(testPutResource).To(Equal([]byte(`{"key": "value"}`)))
+			Expect(testPutError).To(BeNil())
 		})
 	})
 
