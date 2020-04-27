@@ -62,14 +62,14 @@ var _ = Describe("Database", func() {
 	Context("Read", func() {
 		It("should successfully fetch an Database entity", func() {
 			azureRecord := struct {
-				ID	string
-				RID string
-				TS	int64
-				SELF string
-				ETAG string
+				ID    string
+				RID   string
+				TS    int64
+				SELF  string
+				ETAG  string
 				COLLS string
-				USER string
-			} {
+				USER  string
+			}{
 				"ID",
 				"RID",
 				1000,
