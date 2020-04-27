@@ -1,13 +1,13 @@
 package database_test
 
 import (
+	. "cosmos-go-sdk/database"
+	"cosmos-go-sdk/testdata/mocks"
 	"errors"
+	"fmt"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	. "cosmos-go-sdk/database"
-	"cosmos-go-sdk/testdata/mocks"
 )
 
 var _ = Describe("Database", func() {
@@ -61,18 +61,28 @@ var _ = Describe("Database", func() {
 
 	Context("Read", func() {
 		It("should successfully fetch an Database entity", func() {
-			mockRequest.EXPECT().Get().Return([]byte("database"), nil).Times(1)
+			azureRecord := struct {
+				ID	string
+				RID string
+				TS	int64
+				SELF string
+				ETAG string
+				COLLS string
+				USER string
+			} {
+				"ID",
+				"RID",
+				1000,
+				"SELF",
+				"ETAG",
+				"COLLS",
+				"USER",
+			}
+			azureRecordString := fmt.Sprintf(`{"id": "%s", "_rid": "%s", "_ts": %d, "_self": "%s", "_etag": "%s", "_colls": "%s", "_user": "%s"}`, azureRecord.ID, azureRecord.RID, azureRecord.TS, azureRecord.SELF, azureRecord.ETAG, azureRecord.COLLS, azureRecord.USER)
+			mockRequest.EXPECT().Get().Return([]byte(azureRecordString), nil).Times(1)
 			database, testReadError := testDatabase.Read()
 			Expect(testReadError).ShouldNot(HaveOccurred())
-			Expect(database).To(Equal(Entity{
-				ID:    "",
-				RID:   "",
-				TS:    0,
-				SELF:  "",
-				ETAG:  "",
-				COLLS: "",
-				USER:  "",
-			}))
+			Expect(database).To(Equal(Entity(azureRecord)))
 		})
 
 		It("should return error if unable to successfully fetch an database entity", func() {
