@@ -109,24 +109,27 @@ func (request Request) Get() ([]byte, error) {
 		return nil, errReadResponseBody
 	}
 
-	if azureHTTPError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody)); azureHTTPError != nil {
-		return nil, azureHTTPError
+	azureHTTPError, unmarshalError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody))
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	if azureHTTPError.Code != "" {
+		return nil, fmt.Errorf("code: %s, message: %s", azureHTTPError.Code, azureHTTPError.Message)
 	}
 
 	return responseBody, nil
 }
 
-func azureHTTPErrorCheck(statusCode int, responseBody []byte) error {
+func azureHTTPErrorCheck(statusCode int, responseBody []byte) (AzureHTTPError, error) {
+	var azureHTTPError AzureHTTPError
 	if statusCode >= 400 {
-		var clientError AzureHTTPError
-		unmarshalError := json.Unmarshal(responseBody, &clientError)
-
+		unmarshalError := json.Unmarshal(responseBody, &azureHTTPError)
 		if unmarshalError != nil {
-			return fmt.Errorf("unknown error schema : %s", string(responseBody))
+			return azureHTTPError, fmt.Errorf("unknown error schema : %s", string(responseBody))
 		}
-		return fmt.Errorf("code: %s, message: %s", clientError.Code, clientError.Message)
 	}
-	return nil
+	return azureHTTPError, nil
 }
 
 // Put performs a PUT HTTP request to the Azure API for the provided
@@ -172,8 +175,13 @@ func (request Request) Put(resource []byte) ([]byte, error) {
 	defer response.Body.Close()
 	responseBody, readRespBodyErr := ioutil.ReadAll(response.Body)
 
-	if azureHTTPError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody)); azureHTTPError != nil {
-		return nil, azureHTTPError
+	azureHTTPError, unmarshalError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody))
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	if azureHTTPError.Code != "" {
+		return nil, fmt.Errorf("code: %s, message: %s", azureHTTPError.Code, azureHTTPError.Message)
 	}
 
 	if readRespBodyErr != nil {
@@ -193,18 +201,18 @@ func (request Request) Delete() error {
 // https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
 // TODO: [SC] Add unit tests
 func extractResourcePathFromURI(uri string) (string, error) {
-   u, err := url.Parse(uri)
-   if err != nil {
-       return "", err
-   }
-   path := u.Path
-   // Note: We could have the following 3 cases
-   // {host}/{path} in this case we return path
-   // {host}/ in this case we return the empty string
-   // {host} in this case we return the empty string
-   if path[0:1] == "/" {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return "", err
+	}
+	path := u.Path
+	// Note: We could have the following 3 cases
+	// {host}/{path} in this case we return path
+	// {host}/ in this case we return the empty string
+	// {host} in this case we return the empty string
+	if path[0:1] == "/" {
 		path = path[1:]
-   }
+	}
 
-   return path, nil
+	return path, nil
 }
