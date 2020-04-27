@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -75,7 +76,10 @@ func (request Request) Post(resource []byte) ([]byte, error) {
 // identified by the provided resource ID.
 // It returns the requested resource as a byte array and any errors encountered.
 func (request Request) Get() ([]byte, error) {
-	resourcePath := extractResourcePathFromURI(request.URI)
+	resourcePath, invalidUriError := extractResourcePathFromURI(request.URI)
+	if invalidUriError != nil {
+		return nil, invalidUriError
+	}
 
 	// Get token, if any error, return immediately
 	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodGet, request.ResourceType, resourcePath, request.Key)
@@ -131,7 +135,10 @@ func azureHTTPErrorCheck(statusCode int, responseBody []byte) error {
 // TODO: [NS] How should partitionKey be handled? Should it be optional?
 // TODO: [NS] Add better error messages
 func (request Request) Put(resource []byte) ([]byte, error) {
-	resourcePath := extractResourcePathFromURI(request.URI)
+	resourcePath, invalidUriError := extractResourcePathFromURI(request.URI)
+	if invalidUriError != nil {
+		return nil, invalidUriError
+	}
 
 	// Get token, if any error, return immediately
 	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodPut, request.ResourceType, resourcePath, request.Key)
@@ -184,11 +191,20 @@ func (request Request) Delete() error {
 
 // Note: URI follows the below format:
 // https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
-// TODO: [NS] Add unit tests
-func extractResourcePathFromURI(uri string) string {
-	res := strings.Split(uri, ".com/")
-	if len(res) < 2 {
-		return ""
-	}
-	return res[1]
+// TODO: [SC] Add unit tests
+func extractResourcePathFromURI(uri string) (string, error) {
+   u, err := url.Parse(uri)
+   if err != nil {
+       return "", err
+   }
+   path := u.Path
+   // Note: We could have the following 3 cases
+   // {host}/{path} in this case we return path
+   // {host}/ in this case we return the empty string
+   // {host} in this case we return the empty string
+   if path[0:1] == "/" {
+		path = path[1:]
+   }
+
+   return path, nil
 }
