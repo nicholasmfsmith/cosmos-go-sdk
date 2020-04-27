@@ -5,19 +5,19 @@ import "cosmos-go-sdk/database"
 
 // Client is the type that describes the Azure Cosmos Client.
 type Client struct {
-	url string
+	uri string
 	key string
 }
 
 // New returns an instance of the Client struct.
-func New(url, key string) *Client {
+func New(uri, key string) *Client {
 	return &Client{
-		url,
+		uri,
 		key,
 	}
 }
 
 // Database returns an instance of Database with the current instance of Client as the context on which to create the new Database.
-func (client *Client) Database(name string) *database.Database {
-	return database.New(name, client.key)
+func (client *Client) Database(name string) database.Database {
+	return database.New(name, client.key, client.uri)
 }
