@@ -2,6 +2,7 @@ package database_test
 
 import (
 	. "cosmos-go-sdk/database"
+	"cosmos-go-sdk/rest"
 	"cosmos-go-sdk/testdata/mocks"
 	"errors"
 	"fmt"
@@ -36,6 +37,7 @@ var _ = Describe("Database", func() {
 
 		It("should successfully return a new instance of a Database with a type Request as a property", func() {
 			testDatabase = New("testDb", "KEY", "localhost")
+			Expect(testDatabase.Request).To(BeAssignableToTypeOf(rest.Request{}))
 		})
 
 		It("should successfully return a new instance of a Database with modified uri", func() {
@@ -61,28 +63,20 @@ var _ = Describe("Database", func() {
 
 	Context("Read", func() {
 		It("should successfully fetch an Database entity", func() {
-			azureRecord := struct {
-				ID    string
-				RID   string
-				TS    int64
-				SELF  string
-				ETAG  string
-				COLLS string
-				USER  string
-			}{
-				"ID",
-				"RID",
-				1000,
-				"SELF",
-				"ETAG",
-				"COLLS",
-				"USER",
+			azureRecord := Entity{
+				ID:    "ID",
+				RID:   "RID",
+				TS:    1000,
+				SELF:  "SELF",
+				ETAG:  "ETAG",
+				COLLS: "COLLS",
+				USER:  "USER",
 			}
 			azureRecordString := fmt.Sprintf(`{"id": "%s", "_rid": "%s", "_ts": %d, "_self": "%s", "_etag": "%s", "_colls": "%s", "_user": "%s"}`, azureRecord.ID, azureRecord.RID, azureRecord.TS, azureRecord.SELF, azureRecord.ETAG, azureRecord.COLLS, azureRecord.USER)
 			mockRequest.EXPECT().Get().Return([]byte(azureRecordString), nil).Times(1)
 			database, testReadError := testDatabase.Read()
 			Expect(testReadError).ShouldNot(HaveOccurred())
-			Expect(database).To(Equal(Entity(azureRecord)))
+			Expect(database).To(Equal(azureRecord))
 		})
 
 		It("should return error if unable to successfully fetch an database entity", func() {
