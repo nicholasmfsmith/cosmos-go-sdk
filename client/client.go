@@ -10,14 +10,14 @@ type Client struct {
 }
 
 // New returns an instance of the Client struct.
-func New(uri, key string) *Client {
-	return &Client{
+func New(uri, key string) Client {
+	return Client{
 		uri,
 		key,
 	}
 }
 
 // Database returns an instance of Database with the current instance of Client as the context on which to create the new Database.
-func (client *Client) Database(name string) database.Database {
+func (client Client) Database(name string) database.Database {
 	return database.New(name, client.key, client.uri)
 }

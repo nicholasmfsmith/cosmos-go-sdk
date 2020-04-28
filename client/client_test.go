@@ -10,14 +10,14 @@ import (
 
 var _ = Describe("Client", func() {
 
-	var testClient *Client
+	var testClient Client
 	BeforeEach(func() {
 		testClient = New("url", "key")
 	})
 
 	Context("New", func() {
 		It("should successfully return a new instance of Client", func() {
-			Expect(testClient).To(BeAssignableToTypeOf(&Client{}))
+			Expect(testClient).To(BeAssignableToTypeOf(Client{}))
 		})
 	})
 
