@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	ResourceType = "dbs"
+	resourceType = "dbs"
 )
 
 // Database defines the database client
@@ -21,12 +21,12 @@ type Database struct {
 
 // New returns an instance of Database
 func New(name, key, uri string) Database {
-	uri = uri + "/" + ResourceType + "/" + name
+	uri = uri + "/" + resourceType + "/" + name
 	return Database{
 		uri,
 		name,
 		key,
-		rest.New(uri, ResourceType, key),
+		rest.New(uri, resourceType, key),
 	}
 }
 
