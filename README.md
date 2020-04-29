@@ -16,6 +16,3 @@ client.Database("dbName").Collection("collName").Document("docName").Read()
 
 ## Note
 - We nor this repository are affiliated with Microsoft. This repository simply serves to make the developer experience with the Azure Cosmos REST API more seamless. Happy coding! :)
-
-## Contributors
-- [Nicholas Smith](https://github.com/nicholasmfsmith)
