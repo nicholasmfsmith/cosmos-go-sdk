@@ -1,6 +1,6 @@
 # Cosmos Go SDK
 
-**DISCLAIMER: THIS PROJECT IS STILL IN THE VERY EARLY PHASES AND IS NOT YET FUNCTIONAL**
+**DISCLAIMER: THIS PROJECT IS STILL IN THE VERY EARLY PHASES AND IS NOT YET FUNCTIONAL. Please come back once we have our first release**
 
 [![Build Status](https://travis-ci.com/nicholasmfsmith/cosmos-go-sdk.svg?branch=master)](https://travis-ci.com/nicholasmfsmith/cosmos-go-sdk)
 
