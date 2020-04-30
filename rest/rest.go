@@ -61,13 +61,13 @@ func New(uri, resourceType, key string) Request {
 // Post performs a POST HTTP request to the Azure API to create the provided resource.
 // It returns the created resource as a byte array and any errors encountered.
 func (request Request) Post(resource []byte) ([]byte, error) {
-	resourcePath, invalidURIError := extractResourcePathFromURI(request.URI)
-	if invalidURIError != nil {
-		return nil, invalidURIError
+	resourceLink, getLinkFromURIError := extractResourceLinkFromURI(request.URI)
+	if getLinkFromURIError != nil {
+		return nil, getLinkFromURIError
 	}
 
 	// Get token, if any error, return immediately
-	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodPost, request.ResourceType, resourcePath, request.Key)
+	authToken, requestTokenBuildErr := request.Token.Build(http.MethodPost, request.ResourceType, resourceLink, request.Key)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
@@ -77,22 +77,22 @@ func (request Request) Post(resource []byte) ([]byte, error) {
 	// partitionKey := fmt.Sprintf(`["%s"]`, resource.PartitionKey())
 
 	// Create request
-	currentHTTPRequest, newRequestErr := http.NewRequest(http.MethodPost, request.URI, bytes.NewBuffer(resource))
+	httpRequest, newRequestErr := http.NewRequest(http.MethodPost, request.URI, bytes.NewBuffer(resource))
 	if newRequestErr != nil {
 		return nil, newRequestErr
 	}
 
 	// Assign required headers
-	// currentHTTPRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
-	currentHTTPRequest.Header["x-ms-version"] = []string{apiVersion}
-	currentHTTPRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
-	currentHTTPRequest.Header["authorization"] = []string{currentToken}
+	// httpRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
+	httpRequest.Header["x-ms-version"] = []string{apiVersion}
+	httpRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+	httpRequest.Header["authorization"] = []string{authToken}
 	// Note Content-type is required for PUT/POST
-	currentHTTPRequest.Header["content-type"] = []string{"application/json"}
+	httpRequest.Header["content-type"] = []string{"application/json"}
 
 	// TODO: [NS] Handle optional headers
 
-	resp, requestErr := request.HTTP.Do(currentHTTPRequest)
+	resp, requestErr := request.HTTP.Do(httpRequest)
 	if requestErr != nil {
 		return nil, requestErr
 	}
@@ -109,30 +109,30 @@ func (request Request) Post(resource []byte) ([]byte, error) {
 // identified by the provided resource ID.
 // It returns the requested resource as a byte array and any errors encountered.
 func (request Request) Get() ([]byte, error) {
-	resourcePath, invalidUriError := extractResourcePathFromURI(request.URI)
-	if invalidUriError != nil {
-		return nil, invalidUriError
+	resourceLink, getLinkFromURIError := extractResourceLinkFromURI(request.URI)
+	if getLinkFromURIError != nil {
+		return nil, getLinkFromURIError
 	}
 
 	// Get token, if any error, return immediately
-	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodGet, request.ResourceType, resourcePath, request.Key)
+	authToken, requestTokenBuildErr := request.Token.Build(http.MethodGet, request.ResourceType, resourceLink, request.Key)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
 
-	currentHTTPRequest, errNewRequest := http.NewRequest(http.MethodGet, request.URI, nil)
+	httpRequest, errNewRequest := http.NewRequest(http.MethodGet, request.URI, nil)
 	if errNewRequest != nil {
 		return nil, errNewRequest
 	}
 
 	// TODO: Adding optional headers in a separate PR
-	currentHTTPRequest.Header["authorization"] = []string{currentToken}
+	httpRequest.Header["authorization"] = []string{authToken}
 	// TODO: [NS] Figure out how to handle partition key
-	// currentHTTPRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
-	currentHTTPRequest.Header["x-ms-version"] = []string{apiVersion}
-	currentHTTPRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+	// httpRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
+	httpRequest.Header["x-ms-version"] = []string{apiVersion}
+	httpRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
 
-	response, errRequest := request.HTTP.Do(currentHTTPRequest)
+	response, errRequest := request.HTTP.Do(httpRequest)
 	if errRequest != nil {
 		return nil, errRequest
 	}
@@ -152,13 +152,13 @@ func (request Request) Get() ([]byte, error) {
 // TODO: [NS] How should partitionKey be handled? Should it be optional?
 // TODO: [NS] Add better error messages
 func (request Request) Put(resource []byte) ([]byte, error) {
-	resourcePath, invalidUriError := extractResourcePathFromURI(request.URI)
-	if invalidUriError != nil {
-		return nil, invalidUriError
+	resourceLink, getLinkFromURIError := extractResourceLinkFromURI(request.URI)
+	if getLinkFromURIError != nil {
+		return nil, getLinkFromURIError
 	}
 
 	// Get token, if any error, return immediately
-	currentToken, requestTokenBuildErr := request.Token.Build(http.MethodPut, request.ResourceType, resourcePath, request.Key)
+	authToken, requestTokenBuildErr := request.Token.Build(http.MethodPut, request.ResourceType, resourceLink, request.Key)
 	if requestTokenBuildErr != nil {
 		return nil, requestTokenBuildErr
 	}
@@ -168,22 +168,22 @@ func (request Request) Put(resource []byte) ([]byte, error) {
 	// partitionKey := fmt.Sprintf(`["%s"]`, resource.PartitionKey())
 
 	// Create request
-	currentHTTPRequest, newRequestErr := http.NewRequest(http.MethodPut, request.URI, bytes.NewBuffer(resource))
+	httpRequest, newRequestErr := http.NewRequest(http.MethodPut, request.URI, bytes.NewBuffer(resource))
 	if newRequestErr != nil {
 		return nil, newRequestErr
 	}
 
 	// Assign required headers
-	// currentHTTPRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
-	currentHTTPRequest.Header["x-ms-version"] = []string{apiVersion}
-	currentHTTPRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
-	currentHTTPRequest.Header["authorization"] = []string{currentToken}
+	// httpRequest.Header["x-ms-documentdb-partitionkey"] = []string{partitionKey}
+	httpRequest.Header["x-ms-version"] = []string{apiVersion}
+	httpRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+	httpRequest.Header["authorization"] = []string{authToken}
 	// Note Content-type is required for PUT/POST
-	currentHTTPRequest.Header["content-type"] = []string{"application/json"}
+	httpRequest.Header["content-type"] = []string{"application/json"}
 
 	// TODO: [NS] Handle optional headers
 
-	resp, requestErr := request.HTTP.Do(currentHTTPRequest)
+	resp, requestErr := request.HTTP.Do(httpRequest)
 	if requestErr != nil {
 		return nil, requestErr
 	}
@@ -206,7 +206,7 @@ func (request Request) Delete() error {
 // Note: URI follows the below format:
 // https://{databaseaccount}.documents.azure.com/dbs/{db-id}/colls/{coll-id}/docs/{doc-name}
 // TODO: [SC] Add unit tests
-func extractResourcePathFromURI(uri string) (string, error) {
+func extractResourceLinkFromURI(uri string) (string, error) {
 	u, err := url.Parse(uri)
 	if err != nil {
 		return "", err
