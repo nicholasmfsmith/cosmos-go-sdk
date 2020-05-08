@@ -54,9 +54,11 @@ var _ = Describe("document", func() {
 
 	Context("Create", func() {
 		It("should successfully create a document in the Azure Cosmos Database Container", func() {
-			testDocument := []byte("This is a test new document")
-			testCreateError := testdocument.Create(testDocument)
+			testDocument := []byte("This is a test created document")
+			mockRequest.EXPECT().Post(testDocument).Return([]byte("This is a test created document that was created"), nil).Times(1)
+			createdDocument, testCreateError := testdocument.Create(testDocument)
 			Expect(testCreateError).To(BeNil())
+			Expect(createdDocument).To(Equal([]byte("This is a test created document that was created")))
 		})
 	})
 
