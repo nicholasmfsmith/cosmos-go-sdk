@@ -12,6 +12,14 @@ type Document struct {
 	Request      rest.IRequest
 }
 
+// IDocument is the interface that defines the functionality of the document package
+type IDocument interface {
+	Read() ([]byte, error)
+	Create(doc []byte) ([]byte, error)
+	Update(doc []byte) ([]byte, error)
+	Delete() error
+}
+
 // New returns an instance of the document struct.
 func New(id, partitionKey, containerURI, key string) Document {
 	// TODO: [NS] Create util function for building URI
@@ -25,13 +33,14 @@ func New(id, partitionKey, containerURI, key string) Document {
 	}
 }
 
-// TODO: Consider all SQL Queries are creates
-// TODO: Separate HTTP request to utils
-
-// Create creates an document in the Azure Cosmos Database Container.
+// Create creates a document in the Azure Cosmos Database Container.
 // It returns any errors encountered.
-func (document Document) Create(doc []byte) error {
-	return nil
+func (document Document) Create(doc []byte) ([]byte, error) {
+	doc, err := document.Request.Post(doc)
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
 }
 
 // Read reads a document in the Azure Cosmos Database Container.
