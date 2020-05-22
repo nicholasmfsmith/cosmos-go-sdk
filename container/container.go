@@ -1,5 +1,5 @@
 // Package container provides functions to create, list, and fetch Cosmos Entity resources
-// and retrieve and instance of an container client
+// and retrieve and instance of an container
 //
 // TODO: Rename all `container` references to `collection` per Azure REST documentation
 // https://docs.microsoft.com/en-us/rest/api/cosmos-db/collections
@@ -7,7 +7,7 @@ package container
 
 import "cosmos-go-sdk/rest"
 
-// Container defines the container client
+// Container defines the container
 type Container struct {
 	Name    string
 	DbName  string
@@ -16,9 +16,9 @@ type Container struct {
 	Request rest.IRequest
 }
 
-// Client creates an instance of a container
-// It returns a Container Client
-func Client(name, databaseURI, dbName, key string) Container {
+// New creates an instance of a container
+// It returns a Container
+func New(name, databaseURI, dbName, key string) Container {
 
 	// TODO: Possibly move this to somewhere all resource types are defined
 	const resourceType = "colls"
@@ -80,26 +80,24 @@ type ExcludedPaths struct {
 
 // Get fetches a Container Entity by name
 // It returns a Container Entity struct
-func (client *Container) Read() ([]byte, error) {
-	bytes, errGet := client.Request.Get()
+func (container *Container) Read() ([]byte, error) {
+	bytes, errGet := container.Request.Get()
 	if errGet != nil {
 		return nil, errGet
 	}
-
-	// TODO - [SC] implement Get
 	return bytes, nil
 }
 
 // Delete deletes an container
 // It returns nil if successfull
-func (client *Container) Delete() error {
+func (container *Container) Delete() error {
 	// TODO - [SC] implement Delete
 	return nil
 }
 
 // Replace upserts a container to a given database
 // It returns a Container Entity struct
-func (client *Container) Replace(document Entity) (Entity, error) {
+func (container *Container) Replace(document Entity) (Entity, error) {
 	// TODO - [SC] implement Replace
 	return Entity{}, nil
 }
@@ -107,6 +105,6 @@ func (client *Container) Replace(document Entity) (Entity, error) {
 // TODO - [SC] need more understanding of what his is suppose to return
 // GetPartitionKeyRanges fetches a Entity by id
 // It returns a Container Entity struct
-// func (client *Container) GetPartitionKeyRanges() *Entity {
+// func (container *Container) GetPartitionKeyRanges() *Entity {
 // 	return nil
 // }

@@ -29,8 +29,8 @@ var _ = Describe("Container", func() {
 		}
 	})
 
-	Context("Client", func() {
-		It("should successfully return a new instance of a Container Client", func() {
+	Context("New", func() {
+		It("should successfully return a new instance of a Container", func() {
 			Expect(testContainer).To(BeAssignableToTypeOf(Container{}))
 		})
 	})
