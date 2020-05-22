@@ -1,21 +1,35 @@
 // Package container provides functions to create, list, and fetch Cosmos Entity resources
 // and retrieve and instance of an container client
+//
+// TODO: Rename all `container` references to `collection` per Azure REST documentation
+// https://docs.microsoft.com/en-us/rest/api/cosmos-db/collections
 package container
+
+import "cosmos-go-sdk/rest"
 
 // Container defines the container client
 type Container struct {
-	name   string
-	dbName string
-	key    string
+	name    string
+	dbName  string
+	key     string
+	Request rest.IRequest
 }
 
 // Client creates an instance of a container
 // It returns a Container Client
-func Client(name, dbName, key string) Container {
+func Client(name, databaseURI, dbName, key string) Container {
+
+	// TODO: Possibly move this to somewhere all resource types are defined
+	const resourceType = "colls"
+
+	// TODO: Need URI Builder, must include db
+	uri := databaseURI + "/" + resourceType + "/" + name
+
 	return Container{
 		name,
 		dbName,
 		key,
+		rest.New(uri, resourceType, key),
 	}
 }
 
@@ -62,11 +76,16 @@ type ExcludedPaths struct {
 	path string // Path that is excluded from indexing
 }
 
-// Get fetches a Container Entity by id
+// Get fetches a Container Entity by name
 // It returns a Container Entity struct
-func (client *Container) Get() (Entity, error) {
+func (client *Container) Read() ([]byte, error) {
+	bytes, errGet := client.Request.Get()
+	if errGet != nil {
+		return nil, errGet
+	}
+
 	// TODO - [SC] implement Get
-	return Entity{}, nil
+	return bytes, nil
 }
 
 // Delete deletes an container
