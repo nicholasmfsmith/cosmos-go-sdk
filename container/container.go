@@ -78,8 +78,8 @@ type ExcludedPaths struct {
 	path string // Path that is excluded from indexing
 }
 
-// Get fetches a Container Entity by name
-// It returns a Container Entity struct
+// Read reads a Container
+// Returns Container and error
 func (container *Container) Read() ([]byte, error) {
 	bytes, errGet := container.Request.Get()
 	if errGet != nil {
