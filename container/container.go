@@ -9,9 +9,10 @@ import "cosmos-go-sdk/rest"
 
 // Container defines the container client
 type Container struct {
-	name    string
-	dbName  string
-	key     string
+	Name    string
+	DbName  string
+	URI     string
+	Key     string
 	Request rest.IRequest
 }
 
@@ -28,6 +29,7 @@ func Client(name, databaseURI, dbName, key string) Container {
 	return Container{
 		name,
 		dbName,
+		uri,
 		key,
 		rest.New(uri, resourceType, key),
 	}
