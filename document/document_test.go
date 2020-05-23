@@ -7,6 +7,7 @@ import (
 
 	. "cosmos-go-sdk/document"
 	"cosmos-go-sdk/testdata/mocks"
+	"errors"
 )
 
 var _ = Describe("document", func() {
@@ -74,8 +75,17 @@ var _ = Describe("document", func() {
 	Context("Update", func() {
 		It("should successfully update a document in the Azure Cosmos Database Container", func() {
 			testDocument := []byte("This is a test updated document")
-			testUpdateError := testdocument.Update(testDocument)
+			mockRequest.EXPECT().Put(testDocument).Return([]byte("This is a test updated document that was updated"), nil).Times(1)
+			updatedDocument, testUpdateError := testdocument.Update(testDocument)
 			Expect(testUpdateError).To(BeNil())
+			Expect(updatedDocument).To(Equal([]byte("This is a test updated document that was updated")))
+		})
+		It("should successfully handle a document update error", func() {
+			testDocument := []byte("This is a test updated document")
+			mockRequest.EXPECT().Put(testDocument).Return(nil, errors.New("This is a test document update error")).Times(1)
+			updatedDocument, testUpdateError := testdocument.Update(testDocument)
+			Expect(testUpdateError.Error()).To(Equal("This is a test document update error"))
+			Expect(updatedDocument).To(BeNil())
 		})
 	})
 

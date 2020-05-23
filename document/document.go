@@ -55,8 +55,12 @@ func (document Document) Read() ([]byte, error) {
 
 // Update updates an document in the Azure Cosmos Database Container.
 // It returns any errors encountered.
-func (document Document) Update(doc []byte) error {
-	return nil
+func (document Document) Update(doc []byte) ([]byte, error) {
+	doc, err := document.Request.Put(doc)
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
 }
 
 // Delete deletes an document in the Azure Cosmos Database Container.
