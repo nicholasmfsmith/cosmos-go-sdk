@@ -5,6 +5,7 @@ package database
 import (
 	"cosmos-go-sdk/rest"
 	"encoding/json"
+	"cosmos-go-sdk/container"
 )
 
 const (
@@ -57,4 +58,10 @@ func (database Database) Read() (Entity, error) {
 // It returns deleted database entity
 func (database Database) Delete() error {
 	return nil
+}
+
+
+// Container returns an instance of Container with the current instance of Database as the context on which to create the new Container.
+func (database Database) Container(name string) container.Container {
+	return container.New(name, database.URI, database.Key)
 }
