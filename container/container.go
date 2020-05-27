@@ -10,7 +10,6 @@ import "cosmos-go-sdk/rest"
 // Container defines the container
 type Container struct {
 	Name    string
-	DbName  string
 	URI     string
 	Key     string
 	Request rest.IRequest
@@ -18,7 +17,7 @@ type Container struct {
 
 // New creates an instance of a container
 // It returns a Container
-func New(name, databaseURI, dbName, key string) Container {
+func New(name, databaseURI, key string) Container {
 
 	// TODO: Possibly move this to somewhere all resource types are defined
 	const resourceType = "colls"
@@ -28,7 +27,6 @@ func New(name, databaseURI, dbName, key string) Container {
 
 	return Container{
 		name,
-		dbName,
 		uri,
 		key,
 		rest.New(uri, resourceType, key),

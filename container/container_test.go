@@ -22,7 +22,6 @@ var _ = Describe("Container", func() {
 		mockRequest = mocks.NewMockIRequest(mockCtrl)
 		testContainer = Container{
 			Name:    "testName",
-			DbName:  "testDBName",
 			URI:     "testURI",
 			Key:     "testKey",
 			Request: mockRequest,
