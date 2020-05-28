@@ -65,7 +65,7 @@ var _ = Describe("Rest", func() {
 		It("should successfully POST a resource in Azure", func() {
 			// TODO: [NS] Validate proper values are configured in http request passed into Do
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
-				StatusCode: 201,
+				StatusCode: 201, // TODO: Use constant
 				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
 			}, nil).Times(1)
 			mockToken.EXPECT().Build(http.MethodPost, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
@@ -75,7 +75,7 @@ var _ = Describe("Rest", func() {
 			Expect(testPostError).To(BeNil())
 		})
 
-		It("should gracefully handle errors when performing a POST for a resource in Azure", func() {
+		It("should successfully handle errors when performing a POST for a resource in Azure", func() {
 			testError := errors.New("This is a test HTTP client error")
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(nil, testError).Times(1)
 			mockToken.EXPECT().Build(http.MethodPost, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
@@ -89,7 +89,7 @@ var _ = Describe("Rest", func() {
 	Context("Get", func() {
 		It("should successfully GET a resource from Azure", func() {
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
-				StatusCode: 200,
+				StatusCode: 200, // TODO: Use constant
 				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
 			}, nil).Times(1)
 			mockToken.EXPECT().Build(http.MethodGet, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
@@ -105,11 +105,10 @@ var _ = Describe("Rest", func() {
 		It("should successfully PUT a resource in Azure", func() {
 			// TODO: [NS] Validate proper values are configured in http request passed into Do
 			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
-				StatusCode: 200,
+				StatusCode: 200, // TODO: Use constant
 				Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"key": "value"}`))),
 			}, nil).Times(1)
 			mockToken.EXPECT().Build(http.MethodPut, "test", "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
-
 			testPutResource, testPutError := testRequest.Put(resource)
 			Expect(testPutResource).To(Equal([]byte(`{"key": "value"}`)))
 			Expect(testPutError).To(BeNil())
@@ -118,6 +117,11 @@ var _ = Describe("Rest", func() {
 
 	Context("Delete", func() {
 		It("should successfully DELETE a resource in Azure", func() {
+			mockHttpClient.EXPECT().Do(gomock.AssignableToTypeOf(&http.Request{})).Return(&http.Response{
+				StatusCode: 204, // TODO: Use constant
+				Body:       nil,
+			}, nil).Times(1)
+			mockToken.EXPECT().Build(http.MethodDelete, testRequest.ResourceType, "dbs/{db-id}/colls/{coll-id}/docs/{doc-name}", "testKey").Return("testToken", nil).Times(1)
 			testDeleteError := testRequest.Delete()
 			Expect(testDeleteError).To(BeNil())
 		})
