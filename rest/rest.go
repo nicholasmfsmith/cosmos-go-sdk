@@ -220,15 +220,10 @@ func (request Request) Delete() error {
 	httpRequest.Header["x-ms-version"] = []string{apiVersion}
 	httpRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
 
-	response, errRequest := request.HTTP.Do(httpRequest)
-	if errRequest != nil {
-		return errRequest
-	}
+	// TODO: Upcoming PR will address handling of AzureHTTP errors (non-204s)
+	_, errRequest := request.HTTP.Do(httpRequest)
 
-	// TODO:
-	// Need to return response obj - how will various res statusCodes, headers, be handled?
-
-	return nil
+	return errRequest
 }
 
 // Note: URI follows the below format:
