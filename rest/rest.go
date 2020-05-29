@@ -196,11 +196,34 @@ func (request Request) Put(resource []byte) ([]byte, error) {
 	return respBody, nil
 }
 
-// Delete performs a DELETE HTTP request to the Azure API to remove the resource
-// identified by the provided resource ID.
+// Delete performs a DELETE HTTP request to the Azure API to remove the resource.
 // It returns any errors encountered.
 func (request Request) Delete() error {
-	return nil
+
+	resourceLink, getLinkFromURIError := extractResourceLinkFromURI(request.URI)
+	if getLinkFromURIError != nil {
+		return getLinkFromURIError
+	}
+
+	authToken, requestTokenBuildErr := request.Token.Build(http.MethodDelete, request.ResourceType, resourceLink, request.Key)
+	if requestTokenBuildErr != nil {
+		return requestTokenBuildErr
+	}
+
+	httpRequest, errNewRequest := http.NewRequest(http.MethodDelete, request.URI, nil)
+	if errNewRequest != nil {
+		return errNewRequest
+	}
+
+	// Add Headers
+	httpRequest.Header["authorization"] = []string{authToken}
+	httpRequest.Header["x-ms-version"] = []string{apiVersion}
+	httpRequest.Header["x-ms-date"] = []string{strings.ToLower(time.Now().UTC().Format(http.TimeFormat))}
+
+	// TODO: Upcoming PR will address handling of AzureHTTP errors (non-204s)
+	_, errRequest := request.HTTP.Do(httpRequest)
+
+	return errRequest
 }
 
 // Note: URI follows the below format:
