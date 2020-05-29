@@ -3,7 +3,9 @@
 //
 package collection
 
-import "cosmos-go-sdk/rest"
+import (
+	"cosmos-go-sdk/rest"
+)
 
 // Collection defines the collection
 type Collection struct {
