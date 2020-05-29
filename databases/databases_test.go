@@ -8,7 +8,7 @@ import (
 	. "cosmos-go-sdk/databases"
 )
 
-var _ = Describe("Container", func() {
+var _ = Describe("Collection", func() {
 	var testClient Databases
 	BeforeEach(func() {
 		testClient = Client("name", "key")

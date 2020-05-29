@@ -31,30 +31,30 @@ var _ = Describe("document", func() {
 
 	Context("New", func() {
 		It("should successfully return a new instance of Document", func() {
-			testdocument = New("testID", "testPartitionKey", "containerURI", "testKey")
+			testdocument = New("testID", "testPartitionKey", "collectionURI", "testKey")
 			Expect(testdocument).To(Not(BeNil()))
 			Expect(testdocument).To(BeAssignableToTypeOf(Document{}))
 		})
 		It("should successfully return a new instance of Document with the correct ID", func() {
-			testdocument = New("testID", "testPartitionKey", "containerURI", "testKey")
+			testdocument = New("testID", "testPartitionKey", "collectionURI", "testKey")
 			Expect(testdocument.ID).To(Equal("testID"))
 		})
 		It("should successfully return a new instance of Document with the correct PartitionKey", func() {
-			testdocument = New("testID", "testPartitionKey", "containerURI", "testKey")
+			testdocument = New("testID", "testPartitionKey", "collectionURI", "testKey")
 			Expect(testdocument.PartitionKey).To(Equal("testPartitionKey"))
 		})
 		It("should successfully return a new instance of Document with the correct URI", func() {
-			testdocument = New("testID", "testPartitionKey", "containerURI", "testKey")
-			Expect(testdocument.URI).To(Equal("containerURI" + "/docs/testID"))
+			testdocument = New("testID", "testPartitionKey", "collectionURI", "testKey")
+			Expect(testdocument.URI).To(Equal("collectionURI" + "/docs/testID"))
 		})
 		It("should successfully return a new instance of Document with the correct Key", func() {
-			testdocument = New("testID", "testPartitionKey", "containerURI", "testKey")
+			testdocument = New("testID", "testPartitionKey", "collectionURI", "testKey")
 			Expect(testdocument.Key).To(Equal("testKey"))
 		})
 	})
 
 	Context("Create", func() {
-		It("should successfully create a document in the Azure Cosmos Database Container", func() {
+		It("should successfully create a document in the Azure Cosmos Database Collection", func() {
 			testDocument := []byte("This is a test created document")
 			mockRequest.EXPECT().Post(testDocument).Return([]byte("This is a test created document that was created"), nil).Times(1)
 			createdDocument, testCreateError := testdocument.Create(testDocument)
@@ -64,7 +64,7 @@ var _ = Describe("document", func() {
 	})
 
 	Context("Read", func() {
-		It("should successfully read a document from the Azure Cosmos Database Container", func() {
+		It("should successfully read a document from the Azure Cosmos Database Collection", func() {
 			mockRequest.EXPECT().Get().Return([]byte("test document has been read"), nil).Times(1)
 			document, testReadError := testdocument.Read()
 			Expect(testReadError).To(BeNil())
@@ -73,7 +73,7 @@ var _ = Describe("document", func() {
 	})
 
 	Context("Update", func() {
-		It("should successfully update a document in the Azure Cosmos Database Container", func() {
+		It("should successfully update a document in the Azure Cosmos Database Collection", func() {
 			testDocument := []byte("This is a test updated document")
 			mockRequest.EXPECT().Put(testDocument).Return([]byte("This is a test updated document that was updated"), nil).Times(1)
 			updatedDocument, testUpdateError := testdocument.Update(testDocument)
@@ -90,7 +90,7 @@ var _ = Describe("document", func() {
 	})
 
 	Context("Delete", func() {
-		It("should successfully delete a document from the Azure Cosmos Database Container", func() {
+		It("should successfully delete a document from the Azure Cosmos Database Collection", func() {
 			testDeleteError := testdocument.Delete()
 			Expect(testDeleteError).To(BeNil())
 		})

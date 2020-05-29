@@ -9,7 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"cosmos-go-sdk/container"
+	"cosmos-go-sdk/collection"
 )
 
 var _ = Describe("Database", func() {
@@ -94,10 +94,10 @@ var _ = Describe("Database", func() {
 			Expect(testDeleteError).To(BeNil())
 		})
 	})
-	Context("Container", func() {
-		It("should successfully return a new instance of Container with the current instance of Database", func() {
-			testContainer := testDatabase.Container("testName")
-			Expect(testContainer).To(BeAssignableToTypeOf(container.Container{}))
+	Context("Collection", func() {
+		It("should successfully return a new instance of Collection with the current instance of Database", func() {
+			testCollection := testDatabase.Collection("testName")
+			Expect(testCollection).To(BeAssignableToTypeOf(collection.Collection{}))
 		})
 	})
 })
