@@ -1,4 +1,4 @@
-package container_test
+package collection_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestContainer(t *testing.T) {
+func TestCollection(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Container Suite")
+	RunSpecs(t, "Collection Suite")
 }

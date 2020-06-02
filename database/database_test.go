@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"cosmos-go-sdk/collection"
 )
 
 var _ = Describe("Database", func() {
@@ -28,18 +29,15 @@ var _ = Describe("Database", func() {
 			Request: mockRequest,
 		}
 	})
-
 	Context("New", func() {
 		It("should successfully return a new instance of a Database Client", func() {
 			testDatabase = New("testDb", "KEY", "localhost")
 			Expect(testDatabase).To(BeAssignableToTypeOf(Database{}))
 		})
-
 		It("should successfully return a new instance of a Database with a type Request as a property", func() {
 			testDatabase = New("testDb", "KEY", "localhost")
 			Expect(testDatabase.Request).To(BeAssignableToTypeOf(rest.Request{}))
 		})
-
 		It("should successfully return a new instance of a Database with modified uri", func() {
 			baseUri := "localhost"
 			databaseName := "testDb"
@@ -47,20 +45,17 @@ var _ = Describe("Database", func() {
 			testDatabase = New(databaseName, "KEY", baseUri)
 			Expect(testDatabase.URI).To(Equal(baseUri + path))
 		})
-
 		It("should successfully return a new instance of a Database with passed key", func() {
 			key := "KEY"
 			testDatabase = New("testDb", key, "localhost")
 			Expect(testDatabase.Key).To(Equal(key))
 		})
-
 		It("should successfully return a new instance of a Database with passed name", func() {
 			name := "testDb"
 			testDatabase = New(name, "KEY", "localhost")
 			Expect(testDatabase.Name).To(Equal(name))
 		})
 	})
-
 	Context("Read", func() {
 		It("should successfully fetch an Database entity", func() {
 			azureRecord := Entity{
@@ -78,7 +73,6 @@ var _ = Describe("Database", func() {
 			Expect(testReadError).ShouldNot(HaveOccurred())
 			Expect(database).To(Equal(azureRecord))
 		})
-
 		It("should return error if unable to successfully fetch an database entity", func() {
 			mockRequest.EXPECT().Get().Return(nil, errors.New("http error")).Times(1)
 			database, testReadError := testDatabase.Read()
@@ -94,11 +88,16 @@ var _ = Describe("Database", func() {
 			Expect(testReadError).Should(HaveOccurred())
 		})
 	})
-
 	Context("Delete", func() {
 		It("should successfully delete current Database entity", func() {
 			testDeleteError := testDatabase.Delete()
 			Expect(testDeleteError).To(BeNil())
+		})
+	})
+	Context("Collection", func() {
+		It("should successfully return a new instance of Collection with the current instance of Database", func() {
+			testCollection := testDatabase.Collection("testName")
+			Expect(testCollection).To(BeAssignableToTypeOf(collection.Collection{}))
 		})
 	})
 })

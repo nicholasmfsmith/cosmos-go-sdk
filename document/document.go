@@ -21,9 +21,9 @@ type IDocument interface {
 }
 
 // New returns an instance of the document struct.
-func New(id, partitionKey, containerURI, key string) Document {
+func New(id, partitionKey, collectionURI, key string) Document {
 	// TODO: [NS] Create util function for building URI
-	uri := containerURI + "/docs/" + id
+	uri := collectionURI + "/docs/" + id
 	return Document{
 		id,
 		partitionKey,
@@ -33,7 +33,7 @@ func New(id, partitionKey, containerURI, key string) Document {
 	}
 }
 
-// Create creates a document in the Azure Cosmos Database Container.
+// Create creates a document in the Azure Cosmos Database Collection.
 // It returns any errors encountered.
 func (document Document) Create(doc []byte) ([]byte, error) {
 	doc, err := document.Request.Post(doc)
@@ -43,8 +43,8 @@ func (document Document) Create(doc []byte) ([]byte, error) {
 	return doc, nil
 }
 
-// Read reads a document in the Azure Cosmos Database Container.
-// It returns a byte array of the document in the Azure Cosmos Database Container and any errors encountered.
+// Read reads a document in the Azure Cosmos Database Collection.
+// It returns a byte array of the document in the Azure Cosmos Database Collection and any errors encountered.
 func (document Document) Read() ([]byte, error) {
 	doc, err := document.Request.Get()
 	if err != nil {
@@ -53,7 +53,7 @@ func (document Document) Read() ([]byte, error) {
 	return doc, nil
 }
 
-// Update a document in the Azure Cosmos Database Container.
+// Update a document in the Azure Cosmos Database Collection.
 // It returns any errors encountered.
 func (document Document) Update(doc []byte) ([]byte, error) {
 	doc, err := document.Request.Put(doc)
@@ -63,7 +63,7 @@ func (document Document) Update(doc []byte) ([]byte, error) {
 	return doc, nil
 }
 
-// Delete deletes an document in the Azure Cosmos Database Container.
+// Delete deletes an document in the Azure Cosmos Database Collection.
 // It returns any errors encountered.
 func (document Document) Delete() error {
 	return nil

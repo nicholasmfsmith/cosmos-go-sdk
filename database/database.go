@@ -1,10 +1,11 @@
 // Package database provides functions to create, list, and fetch Cosmos Database resources
-// and retrieve and instance of an container client
+// and retrieve and instance of a Collection
 package database
 
 import (
 	"cosmos-go-sdk/rest"
 	"encoding/json"
+	"cosmos-go-sdk/collection"
 )
 
 const (
@@ -57,4 +58,10 @@ func (database Database) Read() (Entity, error) {
 // It returns deleted database entity
 func (database Database) Delete() error {
 	return nil
+}
+
+
+// Collection returns an instance of Collection with the current instance of Database as the context on which to create the new collection.
+func (database Database) Collection(name string) collection.Collection {
+	return collection.New(name, database.URI, database.Key)
 }

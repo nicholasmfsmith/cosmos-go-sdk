@@ -1,23 +1,21 @@
-// Package container provides functions to create, list, and fetch Cosmos Entity resources
-// and retrieve and instance of an container
+// Package collection provides functions to create, list, and fetch Cosmos Entity resources
+// and retrieve an instance of a Collection
 //
-// TODO: Rename all `container` references to `collection` per Azure REST documentation
-// https://docs.microsoft.com/en-us/rest/api/cosmos-db/collections
-package container
+package collection
 
 import "cosmos-go-sdk/rest"
 
-// Container defines the container
-type Container struct {
+// Collection defines the collection
+type Collection struct {
 	Name    string
 	URI     string
 	Key     string
 	Request rest.IRequest
 }
 
-// New creates an instance of a container
-// It returns a Container
-func New(name, databaseURI, key string) Container {
+// New creates an instance of a Collection
+// It returns a Collection
+func New(name, databaseURI, key string) Collection {
 
 	// TODO: Possibly move this to somewhere all resource types are defined
 	const resourceType = "colls"
@@ -25,7 +23,7 @@ func New(name, databaseURI, key string) Container {
 	// TODO: Need URI Builder, must include db
 	uri := databaseURI + "/" + resourceType + "/" + name
 
-	return Container{
+	return Collection{
 		name,
 		uri,
 		key,
@@ -33,9 +31,9 @@ func New(name, databaseURI, key string) Container {
 	}
 }
 
-// Entity defines an cosmos Container entity
+// Entity defines a cosmos Collection entity
 type Entity struct {
-	id             string         // name of container provided on creation
+	id             string         // name of collection provided on creation
 	indexingPolicy IndexingPolicy // It is the indexing policy settings for collection.
 	partitionKey   PartitionKey   // It is the partitioning configuration settings for collection.
 	_rid           string         // It is a system generated property. The resource ID (_rid) is a system-generated identifier.
@@ -76,33 +74,33 @@ type ExcludedPaths struct {
 	path string // Path that is excluded from indexing
 }
 
-// Read reads a Container
-// Returns Container and error
-func (container *Container) Read() ([]byte, error) {
-	bytes, errGet := container.Request.Get()
+// Read reads a Collection
+// Returns collection and error
+func (collection Collection) Read() ([]byte, error) {
+	bytes, errGet := collection.Request.Get()
 	if errGet != nil {
 		return nil, errGet
 	}
 	return bytes, nil
 }
 
-// Delete deletes an container
+// Delete deletes a Collection
 // It returns nil if successfull
-func (container *Container) Delete() error {
+func (collection Collection) Delete() error {
 	// TODO - [SC] implement Delete
 	return nil
 }
 
-// Replace upserts a container to a given database
-// It returns a Container Entity struct
-func (container *Container) Replace(document Entity) (Entity, error) {
+// Replace upserts a Collection to a given database
+// It returns a collection Entity struct
+func (collection Collection) Replace(document Entity) (Entity, error) {
 	// TODO - [SC] implement Replace
 	return Entity{}, nil
 }
 
 // TODO - [SC] need more understanding of what his is suppose to return
 // GetPartitionKeyRanges fetches a Entity by id
-// It returns a Container Entity struct
-// func (container *Container) GetPartitionKeyRanges() *Entity {
+// It returns a collection Entity struct
+// func (collection Collection) GetPartitionKeyRanges() Entity {
 // 	return nil
 // }
