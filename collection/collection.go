@@ -101,6 +101,6 @@ func (collection Collection) Replace(document Entity) (Entity, error) {
 // TODO - [SC] need more understanding of what his is suppose to return
 // GetPartitionKeyRanges fetches a Entity by id
 // It returns a collection Entity struct
-// func (collection *collection) GetPartitionKeyRanges() *Entity {
+// func (collection Collection) GetPartitionKeyRanges() Entity {
 // 	return nil
 // }
