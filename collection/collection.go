@@ -4,6 +4,7 @@
 package collection
 
 import (
+	libdocument "cosmos-go-sdk/document"
 	"cosmos-go-sdk/rest"
 )
 
@@ -98,6 +99,12 @@ func (collection Collection) Delete() error {
 func (collection Collection) Replace(document Entity) (Entity, error) {
 	// TODO - [SC] implement Replace
 	return Entity{}, nil
+}
+
+// Document returns an instance of Document of the current Collection
+// TODO: optional params
+func (collection Collection) Document(id string) libdocument.Document {
+	return libdocument.New(id, "", collection.URI, collection.Key)
 }
 
 // TODO - [SC] need more understanding of what his is suppose to return

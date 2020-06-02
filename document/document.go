@@ -22,6 +22,7 @@ type IDocument interface {
 
 // New returns an instance of the document struct.
 func New(id, partitionKey, collectionURI, key string) Document {
+	// TODO: ID & PartitionKey empty string check and handling
 	// TODO: [NS] Create util function for building URI
 	uri := collectionURI + "/docs/" + id
 	return Document{

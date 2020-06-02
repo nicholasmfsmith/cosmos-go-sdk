@@ -6,14 +6,15 @@ import (
 	. "github.com/onsi/gomega"
 
 	. "cosmos-go-sdk/collection"
+	libdocument "cosmos-go-sdk/document"
 	"cosmos-go-sdk/testdata/mocks"
 )
 
 var _ = Describe("Collection", func() {
 
 	var (
-		mockCtrl      *gomock.Controller
-		mockRequest   *mocks.MockIRequest
+		mockCtrl       *gomock.Controller
+		mockRequest    *mocks.MockIRequest
 		testCollection Collection
 	)
 
@@ -58,5 +59,13 @@ var _ = Describe("Collection", func() {
 			Expect(testReplaceError).To(BeNil())
 			Expect(collection).ToNot(BeNil())
 		})
+	})
+
+	Context("Document", func() {
+		It("should successfully return a new instance of Document of current Collection", func() {
+			document := testCollection.Document("testID")
+			Expect(document).To(BeAssignableToTypeOf(libdocument.Document{}))
+		})
+
 	})
 })
