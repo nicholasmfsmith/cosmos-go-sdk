@@ -6,6 +6,8 @@ package rest
 import (
 	"bytes"
 	"cosmos-go-sdk/rest/internal/token"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -56,6 +58,12 @@ func New(uri, resourceType, key string) Request {
 		},
 		&token.Token{},
 	}
+}
+
+// AzureHTTPError represents the http error schema that Azure uses for it's api
+type AzureHTTPError struct {
+	Code    string
+	Message string
 }
 
 // Post performs a POST HTTP request to the Azure API to create the provided resource.
@@ -137,13 +145,32 @@ func (request Request) Get() ([]byte, error) {
 		return nil, errRequest
 	}
 	defer response.Body.Close()
-
 	responseBody, errReadResponseBody := ioutil.ReadAll(response.Body)
 	if errReadResponseBody != nil {
 		return nil, errReadResponseBody
 	}
 
+	azureHTTPError, unmarshalError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody))
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	if azureHTTPError.Code != "" {
+		return nil, fmt.Errorf("code: %s, message: %s", azureHTTPError.Code, azureHTTPError.Message)
+	}
+
 	return responseBody, nil
+}
+
+func azureHTTPErrorCheck(statusCode int, responseBody []byte) (AzureHTTPError, error) {
+	var azureHTTPError AzureHTTPError
+	if statusCode >= 400 {
+		unmarshalError := json.Unmarshal(responseBody, &azureHTTPError)
+		if unmarshalError != nil {
+			return azureHTTPError, fmt.Errorf("unknown error schema : %s", string(responseBody))
+		}
+	}
+	return azureHTTPError, nil
 }
 
 // Put performs a PUT HTTP request to the Azure API for the provided
@@ -183,17 +210,26 @@ func (request Request) Put(resource []byte) ([]byte, error) {
 
 	// TODO: [NS] Handle optional headers
 
-	resp, requestErr := request.HTTP.Do(httpRequest)
+	response, requestErr := request.HTTP.Do(httpRequest)
 	if requestErr != nil {
 		return nil, requestErr
 	}
-	defer resp.Body.Close()
+	defer response.Body.Close()
+	responseBody, readRespBodyErr := ioutil.ReadAll(response.Body)
 
-	respBody, readRespBodyErr := ioutil.ReadAll(resp.Body)
+	azureHTTPError, unmarshalError := azureHTTPErrorCheck(response.StatusCode, []byte(responseBody))
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	if azureHTTPError.Code != "" {
+		return nil, fmt.Errorf("code: %s, message: %s", azureHTTPError.Code, azureHTTPError.Message)
+	}
+
 	if readRespBodyErr != nil {
 		return nil, readRespBodyErr
 	}
-	return respBody, nil
+	return responseBody, nil
 }
 
 // Delete performs a DELETE HTTP request to the Azure API to remove the resource.
